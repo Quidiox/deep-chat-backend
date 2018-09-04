@@ -1,0 +1,40 @@
+{
+  "name": "deep-chat-backend",
+  "version": "1.0.0",
+  "description": "Deep Chat backend",
+  "main": "index.js",
+  "scripts": {
+    "start": "cross-env NODE_ENV=production node index",
+    "watch": "cross-env NODE_ENV=development nodemon index",
+    "test": "cross-env NODE_ENV=test jest --verbose",
+    "lint": "eslint .",
+    "precommit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "git add"
+    ]
+  },
+  "keywords": [],
+  "author": "Quidiox",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-eslint": "9.0.0",
+    "cross-env": "5.2.0",
+    "eslint": "5.5.0",
+    "eslint-config-prettier": "3.0.1",
+    "eslint-plugin-prettier": "2.6.2",
+    "eslint-plugin-standard": "4.0.0",
+    "husky": "0.14.3",
+    "lint-staged": "7.2.2",
+    "nodemon": "1.18.4",
+    "prettier": "1.14.2"
+  },
+  "dependencies": {
+    "body-parser": "1.18.3",
+    "dotenv": "6.0.0",
+    "express": "4.16.3",
+    "morgan": "1.9.0"
+  }
+}
