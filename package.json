@@ -1,7 +1,7 @@
 {
   "name": "deep-chat-backend",
   "version": "1.0.0",
-  "description": "Deep Chat backend",
+  "private": true,
   "main": "index.js",
   "scripts": {
     "start": "cross-env NODE_ENV=production node index",
@@ -16,9 +16,6 @@
       "git add"
     ]
   },
-  "keywords": [],
-  "author": "Quidiox",
-  "license": "MIT",
   "dependencies": {
     "bcrypt": "3.0.1",
     "body-parser": "1.18.3",

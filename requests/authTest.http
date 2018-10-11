@@ -1,0 +1,16 @@
+
+GET http://localhost:3005/
+Cookie: foo=bar
+###
+
+POST http://localhost:3005/api/auth/verifyToken
+Cookie: authToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImdlbmV2ZSIsImlkIjoiNWJiZjU4ZGMyMTVkN2IzMDIwYTlmOTljIiwiaWF0IjoxNTM5MjY2NzgwfQ.OR95fJQhK-NLDJpd2O1dWsi29BnA3E4O7hLP62OYDmY
+
+###
+POST http://localhost:3005/api/auth/
+Content-Type: application/json
+
+{
+  "username": "winwin",
+  "password": "loselose"
+}
