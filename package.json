@@ -7,8 +7,7 @@
     "start": "cross-env NODE_ENV=production node index",
     "watch": "cross-env NODE_ENV=development nodemon index",
     "test": "cross-env NODE_ENV=test jest --verbose",
-    "lint": "eslint .",
-    "precommit": "lint-staged"
+    "lint": "eslint ."
   },
   "lint-staged": {
     "*.js": [
@@ -42,5 +41,10 @@
     "lint-staged": "7.3.0",
     "nodemon": "1.18.4",
     "prettier": "1.14.3"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   }
 }
