@@ -34,7 +34,7 @@ app.use(
   jwt({
     secret: config.secret,
     getToken: function fromCookie(req) {
-      if (req.cookies && req.cookies.authToken) return req.cookies.authToken
+      if (req.cookies && req.cookies.token) return req.cookies.token
     }
   }).unless({
     path: ['/api/auth/login', '/api/user/create']

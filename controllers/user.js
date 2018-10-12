@@ -42,10 +42,9 @@ userRouter.post('/create', async (req, res) => {
       id: savedUser.id
     }
     const token = jwt.sign(userForToken, config.secret)
-    res.cookie('authToken', token, {
+    res.cookie('token', token, {
       httpOnly: true,
       secure: true,
-      sameSite: Strict,
       maxAge: 3600000
     })
     res.json({
