@@ -15,3 +15,8 @@ Content-Type: application/json
   "username": "winwin",
   "password": "loselose"
 }
+
+###
+GET http://localhost:3005/server
+Cookie: {{cookie}}
+###

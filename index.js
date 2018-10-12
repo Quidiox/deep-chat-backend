@@ -43,7 +43,11 @@ app.use(
 app.use('/api/auth', authRouter)
 app.use('/api/user', userRouter)
 
-socketConfig(io)
+app.use('/server', (req, res, next) => {
+  console.log(req.user, ' ', req.cookies.token)
+  if (req.user && req.cookies.token) socketConfig(io)
+  next()
+})
 
 server.listen(PORT, () =>
   console.log(`Deep Chat app listening on port ${PORT}`)
