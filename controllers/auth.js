@@ -4,9 +4,8 @@ const authRouter = require('express').Router()
 const User = require('../models/user')
 const config = require('../utils/config')
 
-authRouter.post('/', async (req, res) => {
+authRouter.post('/login', async (req, res) => {
   try {
-    console.log(req.body)
     const user = await User.findOne({ username: req.body.username })
     const passwordsMatch =
       user === null
@@ -21,7 +20,7 @@ authRouter.post('/', async (req, res) => {
       id: user.id
     }
     const token = jwt.sign(userForToken, config.secret)
-    res.cookie('authToken', token, { httpOnly: true, secure: true, maxAge: 3600000 })
+    res.cookie('authToken', token, { httpOnly: true, secure: true, sameSite: Strict, maxAge: 3600000 })
     res.json({ username: user.username, name: user.name, id: user.id })
   } catch (error) {
     console.log(error)

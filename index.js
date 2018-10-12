@@ -37,7 +37,7 @@ app.use(
       if (req.cookies && req.cookies.authToken) return req.cookies.authToken
     }
   }).unless({
-    path: ['/api/auth/', '/api/user/create']
+    path: ['/api/auth/login', '/api/user/create']
   })
 )
 app.use('/api/auth', authRouter)

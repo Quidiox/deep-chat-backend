@@ -45,6 +45,7 @@ userRouter.post('/create', async (req, res) => {
     res.cookie('authToken', token, {
       httpOnly: true,
       secure: true,
+      sameSite: Strict,
       maxAge: 3600000
     })
     res.json({
@@ -55,7 +56,7 @@ userRouter.post('/create', async (req, res) => {
   } catch (error) {
     console.log(error)
     if (error.code === 11000) {
-      res.status(400).json({ error: 'username exists' })
+      res.status(409).json({ error: 'username exists' })
     } else {
       res.status(500).json({ error: 'creating user failed' })
     }

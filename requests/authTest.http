@@ -1,13 +1,13 @@
 
-GET http://localhost:3005/
-Cookie: foo=bar
+GET http://localhost:3005/api/user/5bbf580216fe8930b052fede
+Cookie: authToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IndpbndpbiIsImlkIjoiNWJiZjU4MDIxNmZlODkzMGIwNTJmZWRlIiwiaWF0IjoxNTM5MjY3NzM0fQ.zIuBRYminBP-vnsqx6bJDGhI9CY54xh-GuKBSElnz5w
 ###
 
 POST http://localhost:3005/api/auth/verifyToken
 Cookie: authToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImdlbmV2ZSIsImlkIjoiNWJiZjU4ZGMyMTVkN2IzMDIwYTlmOTljIiwiaWF0IjoxNTM5MjY2NzgwfQ.OR95fJQhK-NLDJpd2O1dWsi29BnA3E4O7hLP62OYDmY
 
 ###
-POST http://localhost:3005/api/auth/
+POST http://localhost:3005/api/auth/login
 Content-Type: application/json
 
 {
