@@ -1,9 +1,9 @@
-const app = require('express')()
-const server = require('http').Server(app)
-const io = require('socket.io')(server, { path: '/server' })
+const express = require('express')
+const http = require('http')
+const app = express()
+const server = http.Server(app)
 const cors = require('cors')
 const helmet = require('helmet')
-const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const jwt = require('express-jwt')
 const morgan = require('morgan')
@@ -29,7 +29,7 @@ app.use(cors())
 app.use(helmet())
 app.use(morgan('dev'))
 app.use(cookieParser())
-app.use(bodyParser.json())
+app.use(express.json())
 app.use(
   jwt({
     secret: config.secret,
@@ -43,9 +43,10 @@ app.use(
 app.use('/api/auth', authRouter)
 app.use('/api/user', userRouter)
 
+//socket.io configuration
 app.use('/server', (req, res, next) => {
-  console.log(req.user, ' ', req.cookies.token)
-  if (req.user && req.cookies.token) socketConfig(io)
+  const io = require('socket.io')(server, { path: '/server' })
+  socketConfig(io, server)
   next()
 })
 
