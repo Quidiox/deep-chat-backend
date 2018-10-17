@@ -31,7 +31,8 @@ authRouter.post('/login', async (req, res) => {
     res.status(400).json({ error: 'invalid login credentials' })
   }
 })
-
+/*Better path name needed. Express-jwt allready checks the token, this 
+method needs to check that the user is found and maybe refresh token. */
 authRouter.post('/verifytoken', async (req, res) => {
   try {
     const userExists = await User.findById(req.user.id)

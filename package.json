@@ -9,6 +9,11 @@
     "test": "cross-env NODE_ENV=test jest --verbose",
     "lint": "eslint ."
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
   "lint-staged": {
     "*.js": [
       "eslint --ignore-path .gitignore --fix",
@@ -40,10 +45,5 @@
     "lint-staged": "7.3.0",
     "nodemon": "1.18.4",
     "prettier": "1.14.3"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
   }
 }

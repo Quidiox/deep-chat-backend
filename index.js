@@ -1,17 +1,18 @@
 const express = require('express')
 const http = require('http')
 const app = express()
-const server = http.Server(app)
+const server = http.createServer(app)
+const io = require('socket.io')(server, { path: '/server' })
 const cors = require('cors')
 const helmet = require('helmet')
 const cookieParser = require('cookie-parser')
-const jwt = require('express-jwt')
+const expressJwt = require('express-jwt')
 const morgan = require('morgan')
 const mongoose = require('mongoose')
-const config = require('./utils/config')
-const socketConfig = require('./socketio/socketConfig')
-const authRouter = require('./controllers/auth')
-const userRouter = require('./controllers/user')
+const config = require('./src/utils/config')
+const socketConfig = require('./src/socketio/socketConfig')
+const authRouter = require('./src/controllers/auth')
+const userRouter = require('./src/controllers/user')
 const PORT = config.port || 3001
 
 mongoose.connect(
@@ -29,12 +30,14 @@ app.use(cors())
 app.use(helmet())
 app.use(morgan('dev'))
 app.use(cookieParser())
+app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
 app.use(
-  jwt({
+  expressJwt({
     secret: config.secret,
     getToken: function fromCookie(req) {
       if (req.cookies && req.cookies.token) return req.cookies.token
+      else return null
     }
   }).unless({
     path: ['/api/auth/login', '/api/user/create']
@@ -44,9 +47,16 @@ app.use('/api/auth', authRouter)
 app.use('/api/user', userRouter)
 
 //socket.io configuration
-app.use('/server', (req, res, next) => {
-  const io = require('socket.io')(server, { path: '/server' })
-  socketConfig(io, server)
+app.use((req, res, next) => {
+  io.use(
+    expressJwt({
+      secret: config.secret,
+      getToken: function fromCookie() {
+        if (req.cookies && req.cookies.token) return req.cookies.token
+        else return null
+      }
+    })
+  )
   next()
 })
 
