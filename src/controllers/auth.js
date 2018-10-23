@@ -13,7 +13,7 @@ authRouter.post('/login', async (req, res) => {
         : await bcrypt.compare(req.body.password, user.passwordHash)
 
     if (!(user && passwordsMatch)) {
-      res.status(401).send({ error: 'invalid username or password' })
+      return res.status(401).send({ error: 'invalid username or password' })
     }
     const userForToken = {
       username: user.username,
@@ -22,7 +22,8 @@ authRouter.post('/login', async (req, res) => {
     const token = jwt.sign(userForToken, config.secret)
     res.cookie('token', token, {
       httpOnly: true,
-      secure: true,
+      // can't use next one without https
+      // secure: true,
       maxAge: 3600000
     })
     res.json({ username: user.username, name: user.name, id: user.id })
