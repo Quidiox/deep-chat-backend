@@ -46,7 +46,10 @@ app.use(
 app.use('/api/auth', authRouter)
 app.use('/api/user', userRouter)
 
-//socket.io configuration
+/* socket.io configuration 
+   This stuff needs to be configured after some basic frontend and backend things are done.
+   Athentication token from cookie should be checked with every request.
+*/
 app.use((req, res, next) => {
   io.use(
     expressJwt({

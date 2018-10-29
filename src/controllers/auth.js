@@ -16,14 +16,11 @@ authRouter.post('/login', async (req, res) => {
       return res.status(401).send({ error: 'invalid username or password' })
     }
     const userForToken = {
-      username: user.username,
       id: user.id
     }
     const token = jwt.sign(userForToken, config.secret)
     res.cookie('token', token, {
       httpOnly: true,
-      // can't use next one without https
-      // secure: true,
       maxAge: 3600000
     })
     res.json({ username: user.username, name: user.name, id: user.id })
@@ -32,15 +29,25 @@ authRouter.post('/login', async (req, res) => {
     res.status(400).json({ error: 'invalid login credentials' })
   }
 })
-/*Better path name needed. Express-jwt allready checks the token, this 
-method needs to check that the user is found and maybe refresh token. */
-authRouter.post('/verifytoken', async (req, res) => {
+
+authRouter.post('/verifyUser', async (req, res) => {
   try {
-    const userExists = await User.findById(req.user.id)
-    if (!req.user.id || !userExists || req.user.id !== userExists.id) {
-      return res.status(401).json({ error: 'token missing or invalid' })
+    console.log('hello')
+    const user = await User.findById(req.user.id)
+    if (!req.user.id || !user) {
+      res.clearCookie('token')
+      res.clearCookie('io')
+      return res.status(401).json({ error: 'invalid user information' })
     }
-    res.json({ success: 'token is valid' })
+    const userForToken = {
+      id: user.id
+    }
+    const token = jwt.sign(userForToken, config.secret)
+    res.cookie('token', token, {
+      httpOnly: true,
+      maxAge: 3600000
+    })
+    res.json({ username: user.username, name: user.name, id: user.id })
   } catch (error) {
     console.log(error)
     if (error.name === 'JsonWebTokenError') {
@@ -48,6 +55,17 @@ authRouter.post('/verifytoken', async (req, res) => {
     } else {
       res.status(500).json({ error: 'something went wrong...' })
     }
+  }
+})
+
+authRouter.post('/logout', async (req, res) => {
+  try {
+    res.clearCookie('token')
+    res.clearCookie('io')
+    res.end()
+  } catch (error) {
+    console.log(error)
+    res.status(401).json({ error: error.message })
   }
 })
 
