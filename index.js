@@ -27,6 +27,8 @@ mongoose.set('useCreateIndex', true)
 mongoose.Promise = global.Promise
 
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }))
+/* Some helmet configuration needed. 
+   Run securityheaders.io to see how security could be improved */
 app.use(helmet())
 app.use(morgan('dev'))
 app.use(cookieParser())
