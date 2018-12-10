@@ -15,8 +15,15 @@ Content-Type: application/json
   "username": "winwin",
   "password": "loselose"
 }
-
 ###
 GET http://localhost:3005/server
 Cookie: {{cookie}}
 ###
+@herokuCookie = token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRvbyIsImlkIjoiNWMwZThiN2U4NTQ5MDAwMDA0NTg4ZmI3IiwiaWF0IjoxNTQ0NDU3MDg2fQ.OpBTUE38H_czLYKsvSLZpJMH5PGMKy2pHvX6sFwGxtE
+POST http://deep-chat-backend.herokuapp.com/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "too",
+  "password": "loselose"
+}

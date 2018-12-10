@@ -10,3 +10,14 @@ Content-Type: application/json
 }
 
 ###
+
+@herokuUrl=http://deep-chat-backend.herokuapp.com/api/user
+
+POST {{herokuUrl}}/create
+Content-Type: application/json
+
+{
+  "username": "too",
+  "name": "reality",
+  "password": "loselose"
+}
