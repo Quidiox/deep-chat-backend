@@ -2,6 +2,7 @@ const express = require('express')
 const http = require('http')
 const app = express()
 const server = http.createServer(app)
+const serverless = require('serverless-http')
 const io = require('socket.io')(server, { path: '/server' })
 const cors = require('cors')
 const helmet = require('helmet')
@@ -91,3 +92,5 @@ module.exports = {
   app,
   server
 }
+
+module.exports.handler = serverless(app)
