@@ -30,6 +30,7 @@ app.use(cors({ origin: config.origin, credentials: true }))
 /* Some helmet configuration needed. 
    Run securityheaders.io to see how security could be improved */
 app.use(helmet())
+app.use(helmet.referrerPolicy({ policy: 'no-referrer' }))
 app.use(morgan('dev'))
 app.use(cookieParser())
 app.use(express.urlencoded({ extended: false }))
