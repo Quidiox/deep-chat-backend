@@ -26,7 +26,7 @@ mongoose.connect(
 mongoose.set('useCreateIndex', true)
 mongoose.Promise = global.Promise
 
-app.use(cors({ origin: 'http://localhost:3000', credentials: true }))
+app.use(cors({ origin: 'https://deep-chat.netlify.com', credentials: true }))
 /* Some helmet configuration needed. 
    Run securityheaders.io to see how security could be improved */
 app.use(helmet())
