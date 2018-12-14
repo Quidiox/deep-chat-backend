@@ -10,22 +10,11 @@ const expressJwt = require('express-jwt')
 const morgan = require('morgan')
 const mongoose = require('mongoose')
 const config = require('./src/utils/config')
+const requireHTTPS = require('./src/middleware/requireHTTPS')
 const socketConfig = require('./src/socketio/socketConfig')
 const authRouter = require('./src/controllers/auth')
 const userRouter = require('./src/controllers/user')
 const PORT = config.port || 3001
-
-function requireHTTPS(req, res, next) {
-  // The 'x-forwarded-proto' check is for Heroku
-  if (
-    !req.secure &&
-    req.get('x-forwarded-proto') !== 'https' &&
-    process.env.NODE_ENV !== 'development'
-  ) {
-    return res.redirect('https://' + req.get('host') + req.url)
-  }
-  next()
-}
 
 app.use(requireHTTPS)
 mongoose.connect(
