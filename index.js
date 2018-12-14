@@ -15,6 +15,19 @@ const authRouter = require('./src/controllers/auth')
 const userRouter = require('./src/controllers/user')
 const PORT = config.port || 3001
 
+function requireHTTPS(req, res, next) {
+  // The 'x-forwarded-proto' check is for Heroku
+  if (
+    !req.secure &&
+    req.get('x-forwarded-proto') !== 'https' &&
+    process.env.NODE_ENV !== 'development'
+  ) {
+    return res.redirect('https://' + req.get('host') + req.url)
+  }
+  next()
+}
+
+app.use(requireHTTPS)
 mongoose.connect(
   config.mongoURI,
   {
@@ -26,6 +39,7 @@ mongoose.connect(
 mongoose.set('useCreateIndex', true)
 mongoose.Promise = global.Promise
 
+app.disable('x-powered-by')
 app.use(cors({ origin: config.origin, credentials: true }))
 /* Some helmet configuration needed. 
    Run securityheaders.io to see how security could be improved */
