@@ -30,6 +30,7 @@ mongoose.Promise = global.Promise
 
 app.disable('x-powered-by')
 app.use(cors({ origin: config.origin, credentials: true }))
+app.set('trust proxy', 1)
 /* Some helmet configuration needed. 
    Run securityheaders.io to see how security could be improved */
 app.use(helmet())
