@@ -30,7 +30,6 @@ mongoose.Promise = global.Promise
 
 app.disable('x-powered-by')
 app.use(cors({ origin: config.origin, credentials: true }))
-app.set('trust proxy', 1)
 /* Some helmet configuration needed. 
    Run securityheaders.io to see how security could be improved */
 app.use(helmet())
@@ -81,15 +80,15 @@ server.on('close', () => {
 app.use(function(err, req, res, next) {
   if (err.name === 'UnauthorizedError') {
     console.log(err)
-    res.status(401).json({ error: 'token invalid or missing' })
+    return res.status(401).json({ error: 'token invalid or missing' })
   }
-  next(err)
+  next()
 })
 
 app.use(function(err, req, res, next) {
   if (!err) return next()
   console.log(err)
-  res.status(500).send('internal server error')
+  return res.status(500).send('internal server error')
 })
 
 module.exports = {

@@ -21,7 +21,9 @@ authRouter.post('/login', async (req, res) => {
     const token = jwt.sign(userForToken, config.secret)
     res.cookie('token', token, {
       httpOnly: true,
-      maxAge: 3600000
+      maxAge: 3600000,
+      secure: true,
+      domain: config.domain
     })
     res.json({ username: user.username, name: user.name, id: user.id })
   } catch (error) {
