@@ -32,7 +32,6 @@ authRouter.post('/login', async (req, res) => {
 
 authRouter.post('/verifyUser', async (req, res) => {
   try {
-    console.log('hello')
     const user = await User.findById(req.user.id)
     if (!req.user.id || !user) {
       res.clearCookie('token')
