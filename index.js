@@ -28,8 +28,19 @@ mongoose.connect(
 mongoose.set('useCreateIndex', true)
 mongoose.Promise = global.Promise
 
+const corsOptions = {
+  origin: config.origin,
+  credentials: true,
+  allowedHeaders: [
+    'X-Requested-With',
+    'X-HTTP-Method-Override',
+    'Content-Type',
+    'Accept',
+    'Cookie'
+  ]
+}
 app.disable('x-powered-by')
-app.use(cors({ origin: config.origin, credentials: true }))
+app.use(cors(corsOptions))
 /* Some helmet configuration needed. 
    Run securityheaders.io to see how security could be improved */
 app.use(helmet())

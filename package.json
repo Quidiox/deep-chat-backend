@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "cross-env NODE_ENV=production node index",
-    "watch": "cross-env NODE_ENV=development nodemon index",
+    "watch": "cross-env NODE_ENV=development nodemon index backend.deep-chat.com",
     "test": "cross-env NODE_ENV=test jest --verbose",
     "lint": "eslint ."
   },
