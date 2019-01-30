@@ -92,9 +92,11 @@ app.use(function(err, req, res, next) {
   return res.status(500).send('internal server error')
 })
 
-server.listen(PORT, () =>
-  console.log(`Deep Chat app listening on port ${PORT}`)
-)
+if (process.env.NODE_ENV !== 'test') {
+  server.listen(PORT, () =>
+    console.log(`Deep Chat app listening on port ${PORT}`)
+  )
+}
 
 server.on('close', () => {
   mongoose.connection.close()
