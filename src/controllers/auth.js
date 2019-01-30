@@ -6,6 +6,7 @@ const config = require('../utils/config')
 
 authRouter.post('/login', async (req, res) => {
   try {
+    console.log(req.body)
     const user = await User.findOne({ username: req.body.username })
     const passwordsMatch =
       user === null

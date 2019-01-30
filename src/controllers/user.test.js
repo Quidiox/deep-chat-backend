@@ -6,12 +6,12 @@ describe('User controller', () => {
   let server = null
   let userId = null
 
-  beforeAll(() => {
-    server = app.listen()
+  beforeAll(done => {
+    server = app.listen(done)
     request = supertest.agent(server)
   })
-  afterAll(async () => {
-    await server.close()
+  afterAll(done => {
+    server.close(done)
   })
 
   test('user can be created with username and password', async () => {

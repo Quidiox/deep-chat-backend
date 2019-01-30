@@ -18,7 +18,7 @@ describe('Authentication controller', () => {
   afterAll(async () => {
     console.log(userId)
     await request.del(`/api/user/remove/${userId}`)
-    await server.close()
+    server.close()
   })
 
   test('login with valid username and password is successful', async () => {
