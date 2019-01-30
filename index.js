@@ -16,7 +16,7 @@ const authRouter = require('./src/controllers/auth')
 const userRouter = require('./src/controllers/user')
 const PORT = config.port || 3001
 
-app.use(requireHTTPS)
+// app.use(requireHTTPS)
 mongoose.connect(
   config.mongoURI,
   {
@@ -62,11 +62,9 @@ app.use(
 )
 app.use('/api/auth', authRouter)
 app.use('/api/user', userRouter)
-
 /* socket.io configuration 
    This stuff needs to be configured after some basic frontend and backend things are done.
    Athentication token from cookie should be checked with every request.
-*/
 app.use((req, res, next) => {
   io.use(
     expressJwt({
@@ -78,15 +76,7 @@ app.use((req, res, next) => {
     })
   )
   next()
-})
-
-server.listen(PORT, () =>
-  console.log(`Deep Chat app listening on port ${PORT}`)
-)
-
-server.on('close', () => {
-  mongoose.connection.close()
-})
+})*/
 
 app.use(function(err, req, res, next) {
   if (err.name === 'UnauthorizedError') {
@@ -100,6 +90,14 @@ app.use(function(err, req, res, next) {
   if (!err) return next()
   console.log(err)
   return res.status(500).send('internal server error')
+})
+
+server.listen(PORT, () =>
+  console.log(`Deep Chat app listening on port ${PORT}`)
+)
+
+server.on('close', () => {
+  mongoose.connection.close()
 })
 
 module.exports = {

@@ -52,12 +52,22 @@ userRouter.post('/create', async (req, res) => {
       id: savedUser.id
     })
   } catch (error) {
-    console.log(error)
+    // console.log(error)
     if (error.code === 11000) {
       res.status(409).json({ error: 'username exists' })
     } else {
       res.status(500).json({ error: 'creating user failed' })
     }
+  }
+})
+
+userRouter.delete('/remove/:id', async (req, res) => {
+  try {
+    await User.findByIdAndRemove(req.params.id)
+    res.status(204).end()
+  } catch (error) {
+    // console.log(error)
+    res.status(500).json({ error: 'failed horribly' })
   }
 })
 
