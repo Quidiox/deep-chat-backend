@@ -52,7 +52,7 @@ userRouter.post('/create', async (req, res) => {
       id: savedUser.id
     })
   } catch (error) {
-    console.log(error)
+    // console.log(error)
     if (error.code === 11000) {
       res.status(409).json({ error: 'username exists' })
     } else {

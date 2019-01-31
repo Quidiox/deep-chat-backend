@@ -7,8 +7,9 @@ describe('User controller', () => {
   let userId = null
 
   beforeAll(done => {
-    server = app.listen(done)
+    server = app.listen()
     request = supertest.agent(server)
+    done()
   })
   afterAll(done => {
     server.close(done)

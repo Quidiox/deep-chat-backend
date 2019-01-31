@@ -6,58 +6,36 @@ describe('Authentication controller', () => {
   let server = null
   let userId = null
 
-  beforeAll(async () => {
+  beforeAll(done => {
     server = app.listen()
     request = supertest.agent(server)
-    const result = await request
+    request
       .post('/api/user/create')
       .set('Accept', 'application/json')
       .send({ username: 'person1', name: 'person1', password: 'password1' })
-    userId = result.body.id
+      .then(result => {
+        userId = result.body.id
+        done()
+      })
   })
-  afterAll(async () => {
-    console.log(userId)
-    await request.del(`/api/user/remove/${userId}`)
-    server.close()
+  afterAll(done => {
+    request.del(`/api/user/remove/${userId}`).then(() => {
+      server.close(done)
+    })
   })
 
   test('login with valid username and password is successful', async () => {
-    await request
+    const result = await request
       .post('/api/auth/login')
       .set('Accept', 'application/json')
       .send({ username: 'person1', password: 'password1' })
       .expect(200)
+    console.log(result.request.cookies)
   })
-})
+  // test('Token can be used to authenticate', async () => {
 
-/*describe('Authentication controller', done => {
-  test('login with valid username and password is successful', async done => {
-    const result = await request
-      .post('/api/auth/login')
-      .set('Accept', 'application/json')
-      .send({ username: 'person1', password: 'password1' })
-    expect(result.status).toBe(200)
-    done()
-  })
-  done()
-  // send the token - should respond with a 200
-  // test('It responds with JSON', () => {
-  //   return req(server)
-  //     .get('/')
-  //     .set('Authorization', `Bearer ${token}`)
-  //     .then((response) => {
-  //       expect(response.statusCode).toBe(200);
-  //       expect(response.type).toBe('application/json');
-  //     });
-  // });
-})
+  // })
+  // test('Without token authentication fails', async () => {
 
-// describe('Authentication', () => {
-//   beforeEach(() => {
-//     moxios.install()
-//   })
-//   afterEach(() => {
-//     moxios.uninstall()
-//   })
-//   test('')
-// })*/
+  // })
+})
