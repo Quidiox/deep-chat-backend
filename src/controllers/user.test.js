@@ -19,7 +19,7 @@ describe('User controller', () => {
     const result = await request
       .post('/api/user/create')
       .set('Accept', 'application/json')
-      .send({ username: 'abckissa', name: 'abckissa', password: '123456' })
+      .send({ username: 'userTestUser', name: 'User Test', password: '123456' })
       .expect(200)
     userId = result.body.id
   })
@@ -27,7 +27,7 @@ describe('User controller', () => {
     await request
       .post('/api/user/create')
       .set('Accept', 'application/json')
-      .send({ username: 'abckissa', name: 'abckissa', password: '123456' })
+      .send({ username: 'userTestUser', name: 'User Test', password: '123456' })
       .expect(409)
   })
   test('user can be deleted', async () => {

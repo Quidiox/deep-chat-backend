@@ -1,4 +1,5 @@
 @baseUrl=http://localhost:3005/api/user
+@baseUrlDeepChat=http://deep-chat.com/api/user
 
 POST {{baseUrl}}/create
 Content-Type: application/json
@@ -13,7 +14,7 @@ Content-Type: application/json
 
 @herokuUrl=http://deep-chat-backend.herokuapp.com/api/user
 
-POST {{herokuUrl}}/create
+POST {{baseUrlDeepChat}}/create
 Content-Type: application/json
 
 {

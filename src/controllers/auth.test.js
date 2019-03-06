@@ -5,37 +5,60 @@ describe('Authentication controller', () => {
   let request = null
   let server = null
   let userId = null
+  let cookie = null
 
   beforeAll(done => {
     server = app.listen()
-    request = supertest.agent(server)
+    request = supertest(server)
     request
       .post('/api/user/create')
       .set('Accept', 'application/json')
-      .send({ username: 'person1', name: 'person1', password: 'password1' })
-      .then(result => {
-        userId = result.body.id
+      .send({
+        username: 'authTestUser',
+        name: 'person1',
+        password: 'password1'
+      })
+      .then(res => {
+        userId = res.body.id
+        cookie = res.headers['set-cookie']
         done()
       })
   })
   afterAll(done => {
-    request.del(`/api/user/remove/${userId}`).then(() => {
-      server.close(done)
-    })
+    request
+      .del(`/api/user/remove/${userId}`)
+      .set('Cookie', cookie)
+      .then(() => {
+        server.close(done)
+      })
   })
 
   test('login with valid username and password is successful', async () => {
-    const result = await request
+    await request
       .post('/api/auth/login')
       .set('Accept', 'application/json')
-      .send({ username: 'person1', password: 'password1' })
+      .send({ username: 'authTestUser', password: 'password1' })
       .expect(200)
-    console.log(result.request.cookies)
   })
-  // test('Token can be used to authenticate', async () => {
+  test('With valid token authentication succeeds', async () => {
+    const response = await request
+      .post('/api/auth/login')
+      .set('Accept', 'application/json')
+      .send({ username: 'authTestUser', password: 'password1' })
+      .expect(200)
 
-  // })
-  // test('Without token authentication fails', async () => {
+    await request
+      .post('/api/auth/verifyUser')
+      .set('Cookie', response.headers['set-cookie'])
+      .expect(200)
+  })
+  test('Without token authentication fails and error code is 401', async () => {
+    await request
+      .post('/api/auth/login')
+      .set('Accept', 'application/json')
+      .send({ username: 'authTestUser', password: 'password1' })
+      .expect(200)
 
-  // })
+    await request.post('/api/auth/verifyUser').expect(401)
+  })
 })
