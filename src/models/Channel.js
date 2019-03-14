@@ -9,31 +9,27 @@ const channelSchema = new mongoose.Schema({
     dropDups: true
   },
   author: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  created: { type: Date, default: Date.now() },
-  messages: [
-    {
-      title: { type: String, required: true, index: true },
-      text: { type: String, required: false },
-      author: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-      created: { type: Date, default: Date.now() },
-      edited: { type: Date, default: Date.now() },
-      deleted: { type: Boolean },
-      hidden: { type: Boolean }
-    }
-  ],
+  messages: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Message' }],
   members: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-  deleted: { type: Boolean },
-  hidden: { type: Boolean }
+  created: { type: Date, default: Date.now() },
+  edited: { type: Date, default: Date.now() },
+  deleted: { type: Boolean, default: false },
+  hidden: { type: Boolean, default: false }
 })
 
-if (!channelSchema.options.toObject) userSchema.options.toObject = {}
+if (!channelSchema.options.toObject) channelSchema.options.toObject = {}
 
 channelSchema.options.toObject.transform = function(doc, ret, options) {
   return {
     id: ret._id,
     name: ret.name,
-    creator: ret.creator,
-    messages: ret.messages
+    author: ret.author,
+    messages: ret.messages,
+    members: ret.members,
+    created: ret.created,
+    edited: ret.edited,
+    deleted: ret.deleted,
+    hidden: ret.hidden
   }
 }
 
@@ -43,4 +39,4 @@ channelSchema.post('init', function(doc) {
 
 const Channel = mongoose.model('Channel', channelSchema)
 
-module.exports = User
+module.exports = Channel

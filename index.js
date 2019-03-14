@@ -2,7 +2,7 @@ const express = require('express')
 const http = require('http')
 const app = express()
 const server = http.createServer(app)
-const io = require('socket.io')(server, { path: '/server' })
+const io = require('socket.io')(server, { path: '/chat', cookie: false })
 const cors = require('cors')
 const helmet = require('helmet')
 const cookieParser = require('cookie-parser')
@@ -11,11 +11,21 @@ const morgan = require('morgan')
 const mongoose = require('mongoose')
 const config = require('./src/utils/config')
 const requireHTTPS = require('./src/middleware/requireHTTPS')
-const socketConfig = require('./src/socketio/socketConfig')
 const authRouter = require('./src/controllers/auth')
 const userRouter = require('./src/controllers/user')
+const chatRouter = require('./src/controllers/chat')
 const PORT = config.port || 3001
-
+const corsOptions = {
+  origin: config.origin,
+  credentials: true,
+  allowedHeaders: [
+    'X-Requested-With',
+    'X-HTTP-Method-Override',
+    'Content-Type',
+    'Accept',
+    'Cookie'
+  ]
+}
 // app.use(requireHTTPS)
 mongoose.connect(
   config.mongoURI,
@@ -28,17 +38,6 @@ mongoose.connect(
 mongoose.set('useCreateIndex', true)
 mongoose.Promise = global.Promise
 
-const corsOptions = {
-  origin: config.origin,
-  credentials: true,
-  allowedHeaders: [
-    'X-Requested-With',
-    'X-HTTP-Method-Override',
-    'Content-Type',
-    'Accept',
-    'Cookie'
-  ]
-}
 app.disable('x-powered-by')
 app.use(cors(corsOptions))
 /* Some helmet configuration needed. 
@@ -62,21 +61,7 @@ app.use(
 )
 app.use('/api/auth', authRouter)
 app.use('/api/user', userRouter)
-/* socket.io configuration 
-   This stuff needs to be configured after some basic frontend and backend things are done.
-   Athentication token from cookie should be checked with every request.
-app.use((req, res, next) => {
-  io.use(
-    expressJwt({
-      secret: config.secret,
-      getToken: function fromCookie() {
-        if (req.cookies && req.cookies.token) return req.cookies.token
-        else return null
-      }
-    })
-  )
-  next()
-})*/
+app.use('/api/chat', chatRouter)
 
 app.use(function(err, req, res, next) {
   if (err.name === 'UnauthorizedError') {
