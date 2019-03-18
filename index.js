@@ -91,8 +91,8 @@ io.use((socket, next) => {
 
 io.on('connection', socket => {
   console.log('a user connected')
-  socket.on('message', msg => console.log(msg))
-  socket.emit('hi', 'hi world!')
+  socket.on('clientConnected', message => console.log(message))
+  socket.emit('serverConnected', 'Connection to server successful')
   server.on('close', () => {
     socket.disconnect()
   })
