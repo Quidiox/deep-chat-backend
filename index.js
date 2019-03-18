@@ -3,6 +3,7 @@ const http = require('http')
 const app = express()
 const server = http.createServer(app)
 const io = require('socket.io')(server, { path: '/chat', cookie: false })
+const jwt = require('jsonwebtoken')
 const cors = require('cors')
 const helmet = require('helmet')
 const cookieParser = require('cookie-parser')
@@ -10,10 +11,12 @@ const expressJwt = require('express-jwt')
 const morgan = require('morgan')
 const mongoose = require('mongoose')
 const config = require('./src/utils/config')
-const requireHTTPS = require('./src/middleware/requireHTTPS')
 const authRouter = require('./src/controllers/auth')
 const userRouter = require('./src/controllers/user')
-const chatRouter = require('./src/controllers/chat')
+// const requireHTTPS = require('./src/middleware/requireHTTPS')
+// const channelRouter = require('./src/controllers/channel')
+// const messageRouter = require('./src/controllers/message')
+// const socketConfig = require('./src/socketio/socketConfig')
 const PORT = config.port || 3001
 const corsOptions = {
   origin: config.origin,
@@ -61,7 +64,39 @@ app.use(
 )
 app.use('/api/auth', authRouter)
 app.use('/api/user', userRouter)
-app.use('/api/chat', chatRouter)
+// app.use('/api/channel', channelRouter)
+// app.use('/api/message', messageRouter)
+
+io.use((socket, next) => {
+  // console.log(socket.request.headers.cookie)
+  if (
+    socket.request.headers.cookie &&
+    socket.request.headers.cookie.split('=')[0] === 'token'
+  ) {
+    const decoded = jwt.verify(
+      socket.request.headers.cookie.split('=')[1],
+      config.secret
+    )
+    if (!decoded.id) {
+      socket.disconnect()
+      return next(decoded)
+    }
+    // console.log(decoded.id)
+    return next()
+  }
+  console.log('Error no authentication cookie')
+  socket.disconnect()
+  next(new Error('Authentication error'))
+})
+
+io.on('connection', socket => {
+  console.log('a user connected')
+  socket.on('message', msg => console.log(msg))
+  socket.emit('hi', 'hi world!')
+  server.on('close', () => {
+    socket.disconnect()
+  })
+})
 
 app.use(function(err, req, res, next) {
   if (err.name === 'UnauthorizedError') {

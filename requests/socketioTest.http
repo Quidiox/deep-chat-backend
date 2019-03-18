@@ -1,0 +1,8 @@
+@cookie=token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjViYmY1ODAyMTZmZTg5MzBiMDUyZmVkZSIsImlhdCI6MTU1MjkxMzg5Mn0.L0HDCaLMG3MMmYtzGTnxa0pKuA__nP54b2uMzzGZS_E
+
+GET http://backend.deep-chat.com/chat
+Cookie: {{cookie}}
+
+###
+
+GET http://backend.deep-chat.com/chat
