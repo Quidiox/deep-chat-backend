@@ -1,5 +1,5 @@
 @baseUrl=http://localhost:3005/api/user
-@baseUrlDeepChat=http://deep-chat.com/api/user
+@baseUrlDeepChat=http://backend.deep-chat.com/api/user
 
 POST {{baseUrl}}/create
 Content-Type: application/json
@@ -8,6 +8,17 @@ Content-Type: application/json
   "username": "too",
   "name": "reality",
   "password": "loselose"
+}
+
+###
+
+POST {{baseUrlDeepChat}}/create
+Content-Type: application/json
+
+{
+  "username": "ta",
+  "name": "roo4",
+  "password": "roo"
 }
 
 ###

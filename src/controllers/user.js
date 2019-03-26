@@ -3,6 +3,17 @@ const jwt = require('jsonwebtoken')
 const userRouter = require('express').Router()
 const User = require('../models/User')
 const config = require('../utils/config')
+const { check, validationResult } = require('express-validator/check')
+
+const validations = [
+  check('name')
+    .isAlpha()
+    .isLength({ min: 3, max: 30 }),
+  check('username')
+    .isAlpha()
+    .isLength({ min: 3, max: 30 }),
+  check('password').isLength({ min: 3, max: 30 })
+]
 
 userRouter.get('/:userId', async (req, res) => {
   try {
@@ -26,8 +37,12 @@ userRouter.get('/', async (req, res) => {
   }
 })
 
-userRouter.post('/create', async (req, res) => {
+userRouter.post('/create', validations, async (req, res) => {
   try {
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() })
+    }
     const { username, name, password } = req.body
     const saltRounds = 10
     const passwordHash = await bcrypt.hash(password, saltRounds)

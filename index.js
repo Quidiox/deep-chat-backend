@@ -68,23 +68,26 @@ app.use('/api/user', userRouter)
 // app.use('/api/message', messageRouter)
 
 io.use((socket, next) => {
-  // console.log(socket.request.headers.cookie)
   if (
     socket.request.headers.cookie &&
     socket.request.headers.cookie.split('=')[0] === 'token'
   ) {
-    const decoded = jwt.verify(
-      socket.request.headers.cookie.split('=')[1],
-      config.secret
-    )
-    if (!decoded.id) {
+    try {
+      const decoded = jwt.verify(
+        socket.request.headers.cookie.split('=')[1],
+        config.secret
+      )
+      console.log(`User with id: ${decoded.id} connected.`)
+      return next()
+    } catch (error) {
+      console.log('Access denied. Token invalid.')
+      socket.emit('authError', 'Access denied. Token invalid')
       socket.disconnect()
-      return next(decoded)
+      return next(new Error('Authentication error'))
     }
-    // console.log(decoded.id)
-    return next()
   }
-  console.log('Error no authentication cookie')
+  console.log('Access denied. No authentication cookie found.')
+  socket.emit('authError', 'Access denied. No authentication cookie found.')
   socket.disconnect()
   next(new Error('Authentication error'))
 })
@@ -92,7 +95,32 @@ io.use((socket, next) => {
 io.on('connection', socket => {
   console.log('a user connected')
   socket.on('clientConnected', message => console.log(message))
-  socket.emit('serverConnected', 'Connection to server successful')
+  socket.emit('serverConnected', `Connection to server successful.`)
+
+  // Chatroom specific events
+  socket.on('join', () => {})
+
+  socket.on('leave', () => {})
+
+  socket.on('new message', data => {
+    socket.broadcast.emit('new message', {
+      username: data.username,
+      message: data.message
+    })
+  })
+
+  socket.on('create', () => {})
+
+  socket.on('delete', () => {})
+
+  socket.on('chatroomUsers', () => {})
+
+  socket.on('availableUsers', () => {})
+
+  socket.on('disconnect', () => {})
+
+  socket.on('error', () => {})
+
   server.on('close', () => {
     socket.disconnect()
   })
@@ -101,7 +129,7 @@ io.on('connection', socket => {
 app.use(function(err, req, res, next) {
   if (err.name === 'UnauthorizedError') {
     console.log(err)
-    return res.status(401).json({ error: 'token invalid or missing' })
+    return res.status(401).json({ error: 'Token invalid or missing.' })
   }
   next()
 })
