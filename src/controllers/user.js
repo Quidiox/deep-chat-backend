@@ -8,11 +8,17 @@ const { check, validationResult } = require('express-validator/check')
 const validations = [
   check('name')
     .isAlpha()
-    .isLength({ min: 3, max: 30 }),
+    .withMessage('Name should contain only alphabetic characters.')
+    .isLength({ min: 3, max: 30 })
+    .withMessage('Name should be between 3-30 characters long.'),
   check('username')
     .isAlpha()
-    .isLength({ min: 3, max: 30 }),
-  check('password').isLength({ min: 3, max: 30 })
+    .withMessage('Username should contain only alphabetic characters.')
+    .isLength({ min: 3, max: 30 })
+    .withMessage('Username should be between 3-30 characters long.'),
+  check('password')
+    .isLength({ min: 3, max: 30 })
+    .withMessage('Password should be between 3-30 characters long.')
 ]
 
 userRouter.get('/:userId', async (req, res) => {

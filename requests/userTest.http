@@ -16,9 +16,9 @@ POST {{baseUrlDeepChat}}/create
 Content-Type: application/json
 
 {
-  "username": "ta",
-  "name": "roo4",
-  "password": "roo"
+  "username": "t5",
+  "name": "r4",
+  "password": "ro"
 }
 
 ###
