@@ -15,7 +15,7 @@ describe('Authentication controller', () => {
       .set('Accept', 'application/json')
       .send({
         username: 'authTestUser',
-        name: 'person1',
+        name: 'person',
         password: 'password1'
       })
       .then(res => {
