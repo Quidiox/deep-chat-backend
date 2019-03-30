@@ -1,5 +1,7 @@
 @cookie=token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRvbyIsImlkIjoiNWJjMDY2NjcyNjY0ZWYzOWM0YjU5M2E0IiwiaWF0IjoxNTM5MzM1NzgzfQ.wRyxQyh7g7oQTa8ByEGln3t2lJg8ejWeMR1fRp3o8U8
 
+@deepChatServer=http://backend.deep-chat.com/api/auth
+
 GET http://localhost:3005/api/user/5bbf580216fe8930b052fede
 Cookie: {{cookie}}
 ###
@@ -8,12 +10,12 @@ POST http://localhost:3005/api/auth/verifyToken
 Cookie: authToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImdlbmV2ZSIsImlkIjoiNWJiZjU4ZGMyMTVkN2IzMDIwYTlmOTljIiwiaWF0IjoxNTM5MjY2NzgwfQ.OR95fJQhK-NLDJpd2O1dWsi29BnA3E4O7hLP62OYDmY
 
 ###
-POST http://localhost:3005/api/auth/login
+POST {{deepChatServer}}/login
 Content-Type: application/json
 
 {
-  "username": "winwin",
-  "password": "loselose"
+  "username": "ipa",
+  "password": "ror"
 }
 ###
 POST http://localhost:3005/api/auth/verifyUser

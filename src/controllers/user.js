@@ -112,6 +112,9 @@ userRouter.put('/edit', validationsMaybePass, async (req, res) => {
       return res.status(422).json({ errors: errors.array() })
     }
     const { username, name, password, id } = req.body
+    if (req.user.id !== id) {
+      return res.status(400).json({ error: 'error when editing user' })
+    }
     const user = await User.findById(id)
     user.username = username
     user.name = name
@@ -147,6 +150,9 @@ userRouter.put('/edit', validationsMaybePass, async (req, res) => {
 
 userRouter.delete('/delete', async (req, res) => {
   try {
+    if (req.user.id !== req.body.id) {
+      return res.status(400).json({ error: 'error when deleting user' })
+    }
     await User.findByIdAndRemove(req.body.id)
     res.status(204).end()
   } catch (error) {

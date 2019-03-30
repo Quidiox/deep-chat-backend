@@ -1,6 +1,6 @@
 @baseUrl=http://localhost:3005/api/user
 @baseUrlDeepChat=http://backend.deep-chat.com/api/user
-@cookie=token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InpvcnIwIiwiaWQiOiI1YzllMmU3MDBhOThlMTM2N2MzYzZhYjciLCJpYXQiOjE1NTM4NzA0NDh9.1d-sMVfI4FzdNodEx4-YNv8Gv4qAILFGEGD6d_PNN3Q
+@cookie=token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVjOWY2NDUxZmI2OTVhMzZjNGEwMjA3NSIsImlhdCI6MTU1Mzk1MDU4OX0.F6XijXPoS-3wT6NvvdKlm07P4yGCysxCbkC4wBO-I58
 
 GET {{baseUrlDeepChat}}/5bbf580216fe8930b052fede
 Cookie: {{cookie}}
@@ -34,9 +34,9 @@ Content-Type: application/json
 Cookie: {{cookie}}
 
 {
-  "id": "5c9e2e700a98e1367c3c6ab7",
-  "name": "zorr",
-  "username": "zor"
+  "id": "5c9f6451fb695a36c4a02075",
+  "name": "ipana",
+  "username": "ipana"
 }
 
 ###
@@ -46,7 +46,7 @@ Content-Type: application/json
 Cookie: {{cookie}}
 
 {
-  "id": "5c9e2e700a98e1367c3c6ab7"
+  "id": "5c9f6451fb695a36c4a02075"
 }
 
 ###
