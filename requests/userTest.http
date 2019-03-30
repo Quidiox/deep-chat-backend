@@ -2,6 +2,9 @@
 @baseUrlDeepChat=http://backend.deep-chat.com/api/user
 @cookie=token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InpvcnIwIiwiaWQiOiI1YzllMmU3MDBhOThlMTM2N2MzYzZhYjciLCJpYXQiOjE1NTM4NzA0NDh9.1d-sMVfI4FzdNodEx4-YNv8Gv4qAILFGEGD6d_PNN3Q
 
+GET {{baseUrlDeepChat}}/5bbf580216fe8930b052fede
+Cookie: {{cookie}}
+###
 GET {{baseUrlDeepChat}}
 Cookie: {{cookie}}
 ###

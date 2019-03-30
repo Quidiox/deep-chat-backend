@@ -58,7 +58,7 @@ userRouter.get('/:userId', async (req, res) => {
 
 userRouter.get('/', async (req, res) => {
   try {
-    const users = await User.find({}).select('id username name')
+    const users = await User.find().select('id username name')
     res.json(users)
   } catch (error) {
     console.log(error)

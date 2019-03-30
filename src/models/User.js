@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema({
 
 if (!userSchema.options.toObject) userSchema.options.toObject = {}
 
-userSchema.options.toObject.transform = function(doc, ret, options) {
+userSchema.options.toObject.transform = function(doc, ret) {
   return {
     id: ret._id,
     username: ret.username,
