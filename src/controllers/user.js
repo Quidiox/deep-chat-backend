@@ -3,9 +3,9 @@ const jwt = require('jsonwebtoken')
 const userRouter = require('express').Router()
 const User = require('../models/User')
 const config = require('../utils/config')
-const { check, oneOf, validationResult } = require('express-validator/check')
+const { check, validationResult } = require('express-validator/check')
 
-const validations = [
+const validationsForCreate = [
   check('name')
     .custom(name => {
       return name.match(/^[a-zA-Z\s]+$/)
@@ -23,24 +23,24 @@ const validations = [
     .withMessage('Password must be between 3-30 characters long.')
 ]
 
-const validationsMaybePass = [
+const validationsForEdit = [
   check('name')
     .custom(name => {
       return name.match(/^[a-zA-Z\s]+$/)
     })
     .withMessage('Name must contain only alphabetic characters.')
     .isLength({ min: 3, max: 30 })
+    .optional()
     .withMessage('Name must be between 3-30 characters long.'),
   check('username')
     .isLength({ min: 3, max: 30 })
     .withMessage('Username must be between 3-30 characters long.')
     .isAlphanumeric()
+    .optional()
     .withMessage('Username must contain only alphanumeric characters.'),
   check('password')
-    .custom(password => {
-      if (password) return password.match(/^.{3,30}$/)
-      return true
-    })
+    .isLength({ min: 3, max: 30 })
+    .optional()
     .withMessage('Password must be between 3-30 characters long.')
 ]
 
@@ -66,7 +66,7 @@ userRouter.get('/', async (req, res) => {
   }
 })
 
-userRouter.post('/create', validations, async (req, res) => {
+userRouter.post('/create', validationsForCreate, async (req, res) => {
   try {
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
@@ -105,7 +105,7 @@ userRouter.post('/create', validations, async (req, res) => {
   }
 })
 
-userRouter.put('/edit', validationsMaybePass, async (req, res) => {
+userRouter.put('/edit', validationsForEdit, async (req, res) => {
   try {
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
@@ -115,30 +115,32 @@ userRouter.put('/edit', validationsMaybePass, async (req, res) => {
     if (req.user.id !== id) {
       return res.status(400).json({ error: 'error when editing user' })
     }
-    const user = await User.findById(id)
-    user.username = username
-    user.name = name
+    let user = {}
+    if (username) user.username = username
+    if (name) user.name = name
     if (password) {
       const saltRounds = 10
       const passwordHash = await bcrypt.hash(password, saltRounds)
       user.passwordHash = passwordHash
     }
-    console.log(user)
-    const savedUser = await user.save()
+    const savedUser = await User.findOneAndUpdate({ _id: id }, user, {
+      new: true
+    })
     const userForToken = {
       username: savedUser.username,
       id: savedUser.id
     }
-    const token = jwt.sign(userForToken, config.secret)
+    const token = await jwt.sign(userForToken, config.secret)
     res.cookie('token', token, {
       httpOnly: true,
       maxAge: 3600000
     })
-    res.json({
-      username: savedUser.username,
+    const userToReturn = {
+      id: savedUser.id,
       name: savedUser.name,
-      id: savedUser.id
-    })
+      username: savedUser.username
+    }
+    res.json(userToReturn)
   } catch (error) {
     if (error.code === 11000) {
       res.status(409).json({ error: 'username exists' })

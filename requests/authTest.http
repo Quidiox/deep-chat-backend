@@ -14,8 +14,8 @@ POST {{deepChatServer}}/login
 Content-Type: application/json
 
 {
-  "username": "ipa",
-  "password": "ror"
+  "username": "woo",
+  "password": "123"
 }
 ###
 POST http://localhost:3005/api/auth/verifyUser

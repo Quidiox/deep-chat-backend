@@ -1,6 +1,15 @@
 @baseUrl=http://localhost:3005/api/user
 @baseUrlDeepChat=http://backend.deep-chat.com/api/user
-@cookie=token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVjOWY2NDUxZmI2OTVhMzZjNGEwMjA3NSIsImlhdCI6MTU1Mzk1MDU4OX0.F6XijXPoS-3wT6NvvdKlm07P4yGCysxCbkC4wBO-I58
+@cookie=token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVjYTBjMDhiNGRkM2RiNDAyNDI4NWM4ZiIsImlhdCI6MTU1NDAzOTEwOX0.SfvBPgV-0X3fHmXD3oNUBW7OKfSgJ5yKC4cR3czo_tA
+
+POST http://backend.deep-chat.com/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "woo",
+  "password": "123"
+}
+###
 
 GET {{baseUrlDeepChat}}/5bbf580216fe8930b052fede
 Cookie: {{cookie}}
@@ -34,9 +43,8 @@ Content-Type: application/json
 Cookie: {{cookie}}
 
 {
-  "id": "5c9f6451fb695a36c4a02075",
-  "name": "ipana",
-  "username": "ipana"
+  "id": "5ca0c08b4dd3db4024285c8f",
+  "name": "zzz"
 }
 
 ###
@@ -57,7 +65,7 @@ POST {{baseUrlDeepChat}}/create
 Content-Type: application/json
 
 {
-  "username": "too",
-  "name": "reality",
-  "password": "loselose"
+  "username": "woo",
+  "name": "woo",
+  "password": "123"
 }
