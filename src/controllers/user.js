@@ -52,7 +52,7 @@ userRouter.get('/:userId', async (req, res) => {
     res.json(user)
   } catch (error) {
     console.log(error)
-    res.status(400).send({ error: 'failed to get user' })
+    res.status(400).json('failed to get user')
   }
 })
 
@@ -62,7 +62,7 @@ userRouter.get('/', async (req, res) => {
     res.json(users)
   } catch (error) {
     console.log(error)
-    res.status(400).send({ error: 'failed to get all users' })
+    res.status(400).json({ error: 'failed to get all users' })
   }
 })
 
@@ -70,7 +70,7 @@ userRouter.post('/create', validationsForCreate, async (req, res) => {
   try {
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
-      return res.status(422).json({ errors: errors.array() })
+      return res.status(422).json({ error: errors.array() })
     }
     const { username, name, password } = req.body
     const saltRounds = 10

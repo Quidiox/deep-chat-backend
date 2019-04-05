@@ -13,7 +13,7 @@ authRouter.post('/login', async (req, res) => {
         : await bcrypt.compare(req.body.password, user.passwordHash)
 
     if (!(user && passwordsMatch)) {
-      return res.status(401).send({ error: 'invalid username or password' })
+      return res.status(401).json({ error: 'invalid username or password' })
     }
     const userForToken = {
       id: user.id
@@ -26,18 +26,13 @@ authRouter.post('/login', async (req, res) => {
     res.json({ username: user.username, name: user.name, id: user.id })
   } catch (error) {
     console.log(error)
-    res.status(400).json({ error: 'invalid login credentials' })
+    res.status(400).json({ error: 'login failed' })
   }
 })
 
-authRouter.post('/verifyUser', async (req, res) => {
+authRouter.post('/verifyAuthCookie', async (req, res) => {
   try {
     const user = await User.findById(req.user.id)
-    if (!req.user.id || !user) {
-      res.clearCookie('token')
-      res.clearCookie('io')
-      return res.status(401).json({ error: 'invalid user information' })
-    }
     const userForToken = {
       id: user.id
     }
@@ -50,7 +45,7 @@ authRouter.post('/verifyUser', async (req, res) => {
   } catch (error) {
     console.log(error)
     if (error.name === 'JsonWebTokenError') {
-      res.status(401).json({ error: error.message })
+      res.status(401).json(error.message)
     } else {
       res.status(500).json({ error: 'something went wrong...' })
     }
@@ -64,7 +59,7 @@ authRouter.post('/logout', async (req, res) => {
     res.end()
   } catch (error) {
     console.log(error)
-    res.status(401).json({ error: error.message })
+    res.status(401).json({ error: 'logout error' })
   }
 })
 
