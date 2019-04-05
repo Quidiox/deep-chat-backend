@@ -3,12 +3,7 @@ const bcrypt = require('bcrypt')
 const authRouter = require('express').Router()
 const User = require('../models/User')
 const config = require('../utils/config')
-
-const cookieSettings = {
-  httpOnly: true,
-  maxAge: 3600000,
-  domain: config.domain
-}
+const cookieSettings = require('./common/cookieSettings')
 
 authRouter.post('/login', async (req, res) => {
   try {

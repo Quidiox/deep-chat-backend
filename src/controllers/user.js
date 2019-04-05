@@ -1,9 +1,10 @@
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const userRouter = require('express').Router()
+const { check, validationResult } = require('express-validator/check')
 const User = require('../models/User')
 const config = require('../utils/config')
-const { check, validationResult } = require('express-validator/check')
+const cookieSettings = require('./common/cookieSettings')
 
 const validationsForCreate = [
   check('name')
@@ -82,14 +83,10 @@ userRouter.post('/create', validationsForCreate, async (req, res) => {
     })
     const savedUser = await user.save()
     const userForToken = {
-      username: savedUser.username,
       id: savedUser.id
     }
     const token = jwt.sign(userForToken, config.secret)
-    res.cookie('token', token, {
-      httpOnly: true,
-      maxAge: 3600000
-    })
+    res.cookie('token', token, cookieSettings)
     res.json({
       username: savedUser.username,
       name: savedUser.name,
@@ -127,14 +124,10 @@ userRouter.put('/edit', validationsForEdit, async (req, res) => {
       new: true
     })
     const userForToken = {
-      username: savedUser.username,
       id: savedUser.id
     }
     const token = await jwt.sign(userForToken, config.secret)
-    res.cookie('token', token, {
-      httpOnly: true,
-      maxAge: 3600000
-    })
+    res.cookie('token', token, cookieSettings)
     const userToReturn = {
       id: savedUser.id,
       name: savedUser.name,
