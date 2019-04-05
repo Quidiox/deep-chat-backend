@@ -45,12 +45,9 @@ authRouter.post('/verifyAuthCookie', async (req, res) => {
 
 authRouter.post('/logout', async (req, res) => {
   try {
-    res.cookie('token', '', {
-      httpOnly: true,
-      maxAge: 0,
-      domain: config.domain,
-      overwrite: true
-    })
+    const cookieSettingsPlus = { ...cookieSettings, maxAge: 0, overwrite: true }
+    console.log(cookieSettingsPlus)
+    res.cookie('token', '', cookieSettingsPlus)
     res.end()
   } catch (error) {
     console.log(error)
