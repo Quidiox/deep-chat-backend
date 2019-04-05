@@ -4,6 +4,12 @@ const authRouter = require('express').Router()
 const User = require('../models/User')
 const config = require('../utils/config')
 
+const cookieSettings = {
+  httpOnly: true,
+  maxAge: 3600000,
+  domain: config.domain
+}
+
 authRouter.post('/login', async (req, res) => {
   try {
     const user = await User.findOne({ username: req.body.username })
@@ -19,10 +25,7 @@ authRouter.post('/login', async (req, res) => {
       id: user.id
     }
     const token = jwt.sign(userForToken, config.secret)
-    res.cookie('token', token, {
-      httpOnly: true,
-      maxAge: 3600000
-    })
+    res.cookie('token', token, cookieSettings)
     res.json({ username: user.username, name: user.name, id: user.id })
   } catch (error) {
     console.log(error)
@@ -37,25 +40,22 @@ authRouter.post('/verifyAuthCookie', async (req, res) => {
       id: user.id
     }
     const token = jwt.sign(userForToken, config.secret)
-    res.cookie('token', token, {
-      httpOnly: true,
-      maxAge: 3600000
-    })
+    res.cookie('token', token, cookieSettings)
     res.json({ username: user.username, name: user.name, id: user.id })
   } catch (error) {
     console.log(error)
-    if (error.name === 'JsonWebTokenError') {
-      res.status(401).json(error.message)
-    } else {
-      res.status(500).json({ error: 'something went wrong...' })
-    }
+    res.json({ message: 'no valid authentication cookie found' })
   }
 })
 
 authRouter.post('/logout', async (req, res) => {
   try {
-    res.clearCookie('token')
-    res.clearCookie('io')
+    res.cookie('token', '', {
+      httpOnly: true,
+      maxAge: 0,
+      domain: config.domain,
+      overwrite: true
+    })
     res.end()
   } catch (error) {
     console.log(error)
