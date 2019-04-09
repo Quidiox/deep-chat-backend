@@ -13,9 +13,9 @@ const mongoose = require('mongoose')
 const config = require('./src/utils/config')
 const authRouter = require('./src/controllers/auth')
 const userRouter = require('./src/controllers/user')
+const channelController = require('./src/controllers/channel')
+const messageController = require('./src/controllers/message')
 // const requireHTTPS = require('./src/middleware/requireHTTPS')
-// const channelRouter = require('./src/controllers/channel')
-// const messageRouter = require('./src/controllers/message')
 // const socketConfig = require('./src/socketio/socketConfig')
 const PORT = config.port || 3001
 const corsOptions = {
@@ -64,8 +64,6 @@ app.use(
 )
 app.use('/api/auth', authRouter)
 app.use('/api/user', userRouter)
-// app.use('/api/channel', channelRouter)
-// app.use('/api/message', messageRouter)
 
 io.use((socket, next) => {
   if (
@@ -80,14 +78,11 @@ io.use((socket, next) => {
       console.log(`User with id: ${decoded.id} connected.`)
       return next()
     } catch (error) {
-      console.log('Access denied. Token invalid.')
-      socket.emit('authError', 'Access denied. Token invalid')
-      socket.disconnect()
-      return next(new Error('Authentication error'))
+      console.log(error)
     }
   }
-  console.log('Access denied. No authentication cookie found.')
-  socket.emit('authError', 'Access denied. No authentication cookie found.')
+  console.log('Access denied. Token invalid or missing.')
+  socket.emit('authError', 'Access denied. Token invalid or missing.')
   socket.disconnect()
   next(new Error('Authentication error'))
 })
@@ -96,11 +91,23 @@ io.on('connection', socket => {
   console.log('a user connected')
   socket.on('clientConnected', message => console.log(message))
   socket.emit('serverConnected', `Connection to server successful.`)
-
+  socket.once('user', user => {
+    socket.user = user
+    // console.log(socket.user)
+  })
   // Chatroom specific events
-  socket.on('join', () => {})
+  socket.on('join channel', async data => {
+    const channel = await channelController.post(data.name, socket.user.id)
+    socket.join(channel.name, () => {
+      let rooms = Object.keys(socket.rooms)
+      console.log(rooms)
+      io.to(channel.name).emit(
+        `${user.name} has joined channel ${channel.name}`
+      )
+    })
+  })
 
-  socket.on('leave', () => {})
+  socket.on('leave channel', () => {})
 
   socket.on('new message', data => {
     socket.broadcast.emit('new message', {
