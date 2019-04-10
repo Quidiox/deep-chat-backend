@@ -1,13 +1,14 @@
 const Channel = require('../models/Channel')
+const User = require('../models/User')
 const Message = require('../models/Message')
 
 const channelController = {}
 
 //get all channels you have joined
-channelController.getAll = async user => {
+channelController.getByUser = async userId => {
   try {
-    const channels = await Channel.find({ members: user.id }).select(
-      'name members'
+    const channels = await Channel.find({ members: userId }).select(
+      'id name members author'
     )
     return channels
   } catch (error) {
@@ -18,7 +19,9 @@ channelController.getAll = async user => {
 //get channel and 100 last messages
 channelController.get = async channelId => {
   try {
-    const channel = await Channel.findById(channelId)
+    const channel = await Channel.findById(channelId).select(
+      'id name members author'
+    )
     return channel
   } catch (error) {
     console.log(error)
@@ -40,7 +43,13 @@ channelController.getMessagesRange = async (channelId, from, to) => {
 
 channelController.post = async (name, author) => {
   try {
-    const channel = new Channel({ name, author })
+    const channelExists = await Channel.findOne({ name })
+    if (channelExists && channelExists.name === name) {
+      channelExists.members.addToSet(author)
+      await channelExists.save()
+      return channelExists
+    }
+    const channel = new Channel({ name, author, members: [author] })
     const savedChannel = await channel.save()
     return savedChannel
   } catch (error) {
