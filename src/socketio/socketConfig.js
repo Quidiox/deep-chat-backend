@@ -10,7 +10,6 @@ const socketConfig = (io, server) => {
     // Chatroom specific events
     socket.on('USER_JOIN_CHANNEL_REQUEST', async name => {
       const channel = await channelController.post(name, socket.userId)
-      console.log(channel)
       socket.emit('USER_JOIN_CHANNEL_RESPONSE', {
         type: 'USER_JOIN_CHANNEL_RESPONSE',
         payload: channel
