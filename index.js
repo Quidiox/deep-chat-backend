@@ -116,6 +116,22 @@ io.on('connection', socket => {
     })
   })
 
+  socket.on('LOAD_ALL_CHANNELS_REQUEST', () => {
+    console.log('it comes here')
+    const channels = [
+      { title: 'time', id: 11 },
+      { title: 'new age', id: 22 },
+      { title: 'I, me and myself', id: 33 },
+      { title: 'guru meditation', id: 44 },
+      { title: 'five', id: 55 },
+      { title: 'impossible', id: 66 }
+    ]
+    socket.emit('LOAD_ALL_CHANNELS_RESPONSE', {
+      type: 'LOAD_ALL_CHANNELS_RESPONSE',
+      payload: channels
+    })
+  })
+
   socket.on('create', () => {})
 
   socket.on('delete', () => {})
