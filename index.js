@@ -64,29 +64,34 @@ app.use(
 app.use('/api/auth', authRouter)
 app.use('/api/user', userRouter)
 
-io.use((socket, next) => {
+io.use(async (socket, next) => {
   if (
     socket.request.headers.cookie &&
     socket.request.headers.cookie.split('=')[0] === 'token'
   ) {
     try {
-      const decodedUser = jwt.verify(
+      const decodedUser = await jwt.verify(
         socket.request.headers.cookie.split('=')[1],
         config.secret
       )
       console.log('user: ', decodedUser.id)
       socket.userId = decodedUser.id
-      return next()
+      next()
     } catch (error) {
       console.log(error)
     }
+  } else {
+    console.log('Access denied. Token invalid or missing.')
+    socket.emit('authError', 'Access denied. Token invalid or missing.')
+    // socket.disconnect()
+    next(new Error('Authentication error'))
   }
-  console.log('Access denied. Token invalid or missing.')
-  socket.emit('authError', 'Access denied. Token invalid or missing.')
-  socket.disconnect()
-  next(new Error('Authentication error'))
+}).on('connection', socket => {
+  socketConfig(socket)
+  server.on('close', () => {
+    socket.disconnect()
+  })
 })
-socketConfig(io, server)
 
 app.use(function(err, req, res, next) {
   if (err.name === 'UnauthorizedError') {
