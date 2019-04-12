@@ -12,8 +12,8 @@ const channelSchema = new mongoose.Schema(
     author: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     messages: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Message' }],
     members: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-    created: { type: Date, default: Date.now() },
-    edited: { type: Date, default: Date.now() },
+    created: { type: Date, default: Date.now },
+    edited: { type: Date, default: Date.now },
     hidden: { type: Boolean, default: false }
   },
   {

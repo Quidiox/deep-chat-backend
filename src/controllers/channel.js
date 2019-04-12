@@ -1,6 +1,7 @@
 const Channel = require('../models/Channel')
 const User = require('../models/User')
 const Message = require('../models/Message')
+const mongoose = require('mongoose')
 
 const channelController = {}
 
@@ -45,12 +46,16 @@ channelController.post = async (name, author) => {
   try {
     const channelExists = await Channel.findOne({ name })
     if (channelExists && channelExists.name === name) {
-      channelExists.members.addToSet(author)
-      await channelExists.save()
-      return channelExists
+      if (!channelExists.members.find(el => el.toString() === author)) {
+        channelExists.members.addToSet(author)
+        const saved = await channelExists.save()
+        return saved
+      }
+      return { error: `user is already a member of channel ${name}` }
     }
     const channel = new Channel({ name, author, members: [author] })
     const savedChannel = await channel.save()
+    console.log('that: ', savedChannel)
     return savedChannel
   } catch (error) {
     console.log(error)
