@@ -55,7 +55,6 @@ channelController.post = async (name, author) => {
     }
     const channel = new Channel({ name, author, members: [author] })
     const savedChannel = await channel.save()
-    console.log('that: ', savedChannel)
     return savedChannel
   } catch (error) {
     console.log(error)

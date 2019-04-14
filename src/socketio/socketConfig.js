@@ -38,6 +38,9 @@ const socketConfig = socket => {
 
   socket.on('LOAD_ALL_CHANNELS_REQUEST', async () => {
     const channels = await channelController.getByUser(socket.userId)
+    channels.map(channel => {
+      socket.join(channel.name)
+    })
     socket.emit('LOAD_ALL_CHANNELS_RESPONSE', {
       type: 'LOAD_ALL_CHANNELS_RESPONSE',
       payload: channels
