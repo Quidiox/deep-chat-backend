@@ -87,7 +87,7 @@ io.use(async (socket, next) => {
     next(new Error('Authentication error'))
   }
 }).on('connection', socket => {
-  socketConfig(socket)
+  socketConfig(io, socket)
   server.on('close', () => {
     socket.disconnect()
   })

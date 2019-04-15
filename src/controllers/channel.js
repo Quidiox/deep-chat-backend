@@ -14,7 +14,7 @@ channelController.getByUser = async userId => {
     return { error: 'error when getting channels' }
   }
 }
-//get channel and messages
+
 channelController.getChannelMessages = async channelId => {
   try {
     const channelMessages = await Channel.findById(channelId).populate(
@@ -23,7 +23,17 @@ channelController.getChannelMessages = async channelId => {
     return channelMessages
   } catch (error) {
     console.log(error)
-    return { error: `error getting channel by id ${channelId}` }
+    return { error: `error getting channel ${channelId} messages` }
+  }
+}
+
+channelController.getChannelMembers = async channelId => {
+  try {
+    const channelUsers = await Channel.findById(channelId).populate('members')
+    return channelUsers
+  } catch (error) {
+    console.log(error)
+    return { error: `error getting channel ${channelId} members` }
   }
 }
 

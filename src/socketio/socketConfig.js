@@ -1,6 +1,6 @@
 const channelController = require('../../src/controllers/channel')
 const messageController = require('../../src/controllers/message')
-const socketConfig = socket => {
+const socketConfig = (io, socket) => {
   console.log(`User with id ${socket.userId} connected`)
   socket.on('clientConnected', message => {
     console.log(message)
@@ -48,7 +48,7 @@ const socketConfig = socket => {
       text,
       socket.userId
     )
-    socket.emit('NEW_MESSAGE_RESPONSE', {
+    io.in(channelId).emit('NEW_MESSAGE_RESPONSE', {
       type: 'NEW_MESSAGE_RESPONSE',
       payload: {
         channelId,
@@ -63,6 +63,16 @@ const socketConfig = socket => {
       payload: {
         channelId,
         messages
+      }
+    })
+  })
+  socket.on('LOAD_CHANNEL_MEMBERS_REQUEST', async ({ channelId }) => {
+    const members = await channelController.getChannelMembers(channelId)
+    socket.emit('LOAD_CHANNEL_MEMBERS_RESPONSE', {
+      type: 'LOAD_CHANNEL_MEMBERS_RESPONSE',
+      payload: {
+        channelId,
+        members
       }
     })
   })
