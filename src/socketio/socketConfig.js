@@ -51,8 +51,18 @@ const socketConfig = socket => {
     socket.emit('NEW_MESSAGE_RESPONSE', {
       type: 'NEW_MESSAGE_RESPONSE',
       payload: {
-        message,
-        channelId
+        channelId,
+        message
+      }
+    })
+  })
+  socket.on('LOAD_CHANNEL_MESSAGES_REQUEST', async ({ channelId }) => {
+    const messages = await channelController.getChannelMessages(channelId)
+    socket.emit('LOAD_CHANNEL_MESSAGES_RESPONSE', {
+      type: 'LOAD_CHANNEL_MESSAGES_RESPONSE',
+      payload: {
+        channelId,
+        messages
       }
     })
   })

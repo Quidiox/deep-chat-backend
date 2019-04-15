@@ -14,11 +14,13 @@ channelController.getByUser = async userId => {
     return { error: 'error when getting channels' }
   }
 }
-//get channel and 100 last messages
-channelController.getChannelAndMessages = async channelId => {
+//get channel and messages
+channelController.getChannelMessages = async channelId => {
   try {
-    const channel = await Channel.findById(channelId).populate('messages')
-    return channel
+    const channelMessages = await Channel.findById(channelId).populate(
+      'messages'
+    )
+    return channelMessages
   } catch (error) {
     console.log(error)
     return { error: `error getting channel by id ${channelId}` }
