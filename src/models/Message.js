@@ -4,8 +4,8 @@ const messageSchema = new mongoose.Schema(
   {
     text: { type: String, required: true, index: true },
     author: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-    created: { type: Date, default: Date.now() },
-    edited: { type: Date, default: Date.now() },
+    created: { type: Date, default: Date.now },
+    edited: { type: Date, default: Date.now },
     hidden: { type: Boolean, default: false }
   },
   {

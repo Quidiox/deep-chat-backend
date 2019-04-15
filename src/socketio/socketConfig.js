@@ -6,40 +6,11 @@ const socketConfig = socket => {
     console.log(message)
     socket.emit('serverConnected', `Connection to server successful.`)
   })
-  // Chatroom specific events
-  socket.on('USER_JOIN_CHANNEL_REQUEST', async name => {
-    const channel = await channelController.post(name, socket.userId)
-    socket.emit('USER_JOIN_CHANNEL_RESPONSE', {
-      type: 'USER_JOIN_CHANNEL_RESPONSE',
-      payload: channel
-    })
-    // socket.join(channel.name, () => {
-    //   let rooms = Object.keys(socket.rooms)
-    //   console.log(rooms)
-    //   io.to(channel.name).emit(
-    //     'USER_JOIN_CHANNEL_RESPONSE',
-    //     `${user.name} has joined channel ${channel.name}`
-    //   )
-    // })
-  })
-
-  socket.on('USER_LEAVE_CHANNEL_REQUEST', () => {})
-
-  socket.on('NEW_MESSAGE_REQUEST', text => {
-    const message = messageController.post({
-      userId,
-      text
-    })
-    socket.emit('NEW_MESSAGE_RESPONSE', {
-      username: message.username,
-      message: message.text
-    })
-  })
 
   socket.on('LOAD_ALL_CHANNELS_REQUEST', async () => {
     const channels = await channelController.getByUser(socket.userId)
     channels.map(channel => {
-      socket.join(channel.name)
+      socket.join(channel.id)
     })
     socket.emit('LOAD_ALL_CHANNELS_RESPONSE', {
       type: 'LOAD_ALL_CHANNELS_RESPONSE',
@@ -47,15 +18,44 @@ const socketConfig = socket => {
     })
   })
 
-  socket.on('create', () => {})
+  socket.on('USER_JOIN_CHANNEL_REQUEST', async name => {
+    const channel = await channelController.joinOrCreate(name, socket.userId)
+    socket.join(channel.id).emit('USER_JOIN_CHANNEL_RESPONSE', {
+      type: 'USER_JOIN_CHANNEL_RESPONSE',
+      payload: channel
+    })
+  })
 
-  socket.on('delete', () => {})
+  socket.on('USER_LEAVE_CHANNEL_REQUEST', async name => {
+    const result = await channelController.leaveOrDestroy(name, socket.userId)
+    if (result.notice) {
+      socket.emit('USER_LEAVE_CHANNEL_RESPONSE', {
+        type: 'USER_LEAVE_CHANNEL_RESPONSE',
+        payload: result
+      })
+    } else {
+      socket.emit('USER_LEAVE_CHANNEL_RESPONSE', {
+        type: 'USER_LEAVE_CHANNEL_RESPONSE',
+        payload: result
+      })
+      socket.leave(result.name)
+    }
+  })
 
-  socket.on('chatroomUsers', () => {})
-
-  socket.on('availableUsers', () => {})
-
-  socket.on('error', () => {})
+  socket.on('NEW_MESSAGE_REQUEST', async ({ channelId, text }) => {
+    const message = await messageController.newMessage(
+      channelId,
+      text,
+      socket.userId
+    )
+    socket.emit('NEW_MESSAGE_RESPONSE', {
+      type: 'NEW_MESSAGE_RESPONSE',
+      payload: {
+        message,
+        channelId
+      }
+    })
+  })
 }
 
 module.exports = socketConfig
