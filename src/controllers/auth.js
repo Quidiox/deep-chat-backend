@@ -17,7 +17,8 @@ authRouter.post('/login', async (req, res) => {
       return res.status(401).json({ error: 'invalid username or password' })
     }
     const userForToken = {
-      id: user.id
+      id: user.id,
+      name: user.name
     }
     const token = jwt.sign(userForToken, config.secret)
     res.cookie('token', token, cookieSettings)
@@ -32,7 +33,8 @@ authRouter.post('/verifyAuthCookie', async (req, res) => {
   try {
     const user = await User.findById(req.user.id)
     const userForToken = {
-      id: user.id
+      id: user.id,
+      name: user.name
     }
     const token = jwt.sign(userForToken, config.secret)
     res.cookie('token', token, cookieSettings)

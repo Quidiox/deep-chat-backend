@@ -17,9 +17,10 @@ channelController.getByUser = async userId => {
 
 channelController.getChannelMessages = async channelId => {
   try {
-    const channelMessages = await Channel.findById(channelId).populate(
-      'messages'
-    )
+    const channelMessages = await Channel.findById(channelId).populate({
+      path: 'messages',
+      populate: { path: 'author', select: 'name' }
+    })
     return channelMessages
   } catch (error) {
     console.log(error)

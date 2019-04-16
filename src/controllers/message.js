@@ -1,5 +1,6 @@
 const Channel = require('../models/Channel')
 const Message = require('../models/Message')
+const User = require('../models/User')
 
 const messageController = {}
 
@@ -13,11 +14,14 @@ messageController.get = async messageId => {
   }
 }
 
-messageController.newMessage = async (channelId, text, author) => {
+messageController.newMessage = async (channelId, text, author, authorName) => {
   try {
     const channel = await Channel.findById(channelId)
     const tempMessage = new Message({ text, author })
-    const message = await tempMessage.save()
+    let message = await tempMessage.save()
+    message = Object.assign({}, message.toJSON(), {
+      author: { id: author, name: authorName }
+    })
     await channel.messages.addToSet(message.id)
     await channel.save()
     return message

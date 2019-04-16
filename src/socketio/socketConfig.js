@@ -46,7 +46,8 @@ const socketConfig = (io, socket) => {
     const message = await messageController.newMessage(
       channelId,
       text,
-      socket.userId
+      socket.userId,
+      socket.userName
     )
     io.in(channelId).emit('NEW_MESSAGE_RESPONSE', {
       type: 'NEW_MESSAGE_RESPONSE',

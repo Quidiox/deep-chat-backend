@@ -74,8 +74,9 @@ io.use(async (socket, next) => {
         socket.request.headers.cookie.split('=')[1],
         config.secret
       )
-      console.log('user: ', decodedUser.id)
+      console.log('user: ', decodedUser)
       socket.userId = decodedUser.id
+      socket.userName = decodedUser.name
       next()
     } catch (error) {
       console.log(error)

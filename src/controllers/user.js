@@ -83,7 +83,8 @@ userRouter.post('/create', validationsForCreate, async (req, res) => {
     })
     const savedUser = await user.save()
     const userForToken = {
-      id: savedUser.id
+      id: savedUser.id,
+      name: savedUser.name
     }
     const token = jwt.sign(userForToken, config.secret)
     res.cookie('token', token, cookieSettings)
@@ -124,7 +125,8 @@ userRouter.put('/edit', validationsForEdit, async (req, res) => {
       new: true
     })
     const userForToken = {
-      id: savedUser.id
+      id: savedUser.id,
+      name: savedUser.name
     }
     const token = await jwt.sign(userForToken, config.secret)
     res.cookie('token', token, cookieSettings)
