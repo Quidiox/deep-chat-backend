@@ -74,7 +74,6 @@ io.use(async (socket, next) => {
         socket.request.headers.cookie.split('=')[1],
         config.secret
       )
-      console.log('user: ', decodedUser)
       socket.userId = decodedUser.id
       socket.userName = decodedUser.name
       next()
@@ -84,7 +83,6 @@ io.use(async (socket, next) => {
   } else {
     console.log('Access denied. Token invalid or missing.')
     socket.emit('authError', 'Access denied. Token invalid or missing.')
-    // socket.disconnect()
     next(new Error('Authentication error'))
   }
 }).on('connection', socket => {

@@ -1,7 +1,6 @@
 const channelController = require('../../src/controllers/channel')
 const messageController = require('../../src/controllers/message')
 const socketConfig = (io, socket) => {
-  console.log(`User with id ${socket.userId} connected`)
   socket.on('clientConnected', message => {
     console.log(message)
     socket.emit('serverConnected', `Connection to server successful.`)

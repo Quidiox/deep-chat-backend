@@ -18,10 +18,11 @@ messageController.newMessage = async (channelId, text, author, authorName) => {
   try {
     const channel = await Channel.findById(channelId)
     const tempMessage = new Message({ text, author })
-    let message = await tempMessage.save()
-    message = Object.assign({}, message.toJSON(), {
+    const savedMessage = await tempMessage.save()
+    const message = Object.assign({}, savedMessage.toJSON(), {
       author: { id: author, name: authorName }
     })
+    // console.log('new messages controller method: ', message)
     await channel.messages.addToSet(message.id)
     await channel.save()
     return message
