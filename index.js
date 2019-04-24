@@ -83,6 +83,7 @@ io.use(async (socket, next) => {
   } else {
     console.log('Access denied. Token invalid or missing.')
     socket.emit('authError', 'Access denied. Token invalid or missing.')
+    socket.disconnect()
     next(new Error('Authentication error'))
   }
 }).on('connection', socket => {
