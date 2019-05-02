@@ -67,12 +67,19 @@ const socketConfig = (io, socket) => {
     })
   })
   socket.on('LOAD_CHANNEL_MEMBERS_REQUEST', async ({ channelId }) => {
+    const clientsConnected = io.sockets.adapter.rooms[channelId].sockets
+    const activeMembers = Object.keys(clientsConnected).map(
+      client => io.sockets.connected[client].userName
+    )
     const members = await channelController.getChannelMembers(channelId)
+    const membersToReturn = Object.assign({}, members.toJSON(), {
+      activeMembers
+    })
     socket.emit('LOAD_CHANNEL_MEMBERS_RESPONSE', {
       type: 'LOAD_CHANNEL_MEMBERS_RESPONSE',
       payload: {
         channelId,
-        members
+        members: membersToReturn
       }
     })
   })
