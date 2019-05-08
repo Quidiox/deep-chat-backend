@@ -38,6 +38,7 @@ mongoose.connect(
   }
 )
 mongoose.set('useCreateIndex', true)
+mongoose.set('useFindAndModify', false)
 mongoose.Promise = global.Promise
 
 app.disable('x-powered-by')

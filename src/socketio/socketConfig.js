@@ -25,8 +25,8 @@ const socketConfig = (io, socket) => {
     })
   })
 
-  socket.on('USER_LEAVE_CHANNEL_REQUEST', async name => {
-    const result = await channelController.leaveOrDestroy(name, socket.userId)
+  socket.on('USER_LEAVE_CHANNEL_REQUEST', async id => {
+    const result = await channelController.leaveOrDestroy(id, socket.userId)
     if (result.notice) {
       socket.emit('USER_LEAVE_CHANNEL_RESPONSE', {
         type: 'USER_LEAVE_CHANNEL_RESPONSE',
@@ -37,7 +37,7 @@ const socketConfig = (io, socket) => {
         type: 'USER_LEAVE_CHANNEL_RESPONSE',
         payload: result
       })
-      socket.leave(result.name)
+      socket.leave(id)
     }
   })
 

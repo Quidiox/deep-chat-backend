@@ -1,4 +1,5 @@
 const Channel = require('../models/Channel')
+const Message = require('../models/Message')
 
 const channelController = {}
 
@@ -70,24 +71,33 @@ channelController.joinOrCreate = async (name, author) => {
   }
 }
 
-channelController.leaveOrDestroy = async (name, author) => {
+channelController.leaveOrDestroy = async (id, author) => {
   try {
-    const channelExist = await Channel.findOne({ name })
-    if (channelExist && channelExists.name === name) {
-      if (channelExists.members.length > 1) {
-        const filteredMembers = channelExists.members.filter(member => {
-          return member.id !== author
-        })
-        channelExists.members = filteredMembers
-        channelExists.save()
-        return { name, success: `${author} removed from channel ${name}` }
-      } else {
-        await Channel.findOneAndDelete({ name })
-        return { name, success: `channel ${name} deleted` }
-      }
+    const channelExists = await Channel.findById(id)
+    if (
+      channelExists &&
+      channelExists.id === id &&
+      channelExists.members.length > 1
+    ) {
+      const filteredMembers = channelExists.members.filter(
+        memberId => String(memberId) !== author
+      )
+      const modifiedChannel = Object.assign({}, channelExists.toJSON(), {
+        members: filteredMembers
+      })
+      await Channel.findOneAndUpdate({ _id: id }, modifiedChannel, {
+        new: true
+      })
+      return { id, success: `${author} removed from channel ${id}` }
+    } else {
+      await channelExists.messages.forEach(async messageId => {
+        await Message.findOneAndRemove({ _id: messageId })
+      })
+      await Channel.findOneAndRemove({ _id: id })
+      return { id, success: `channel ${id} deleted` }
     }
   } catch (error) {
-    return { notice: `no channel with name ${name} found` }
+    return { notice: `no channel with id ${id} found` }
   }
 }
 
