@@ -76,16 +76,15 @@ io.use(async (socket, next) => {
       )
       socket.userId = decodedUser.id
       socket.userName = decodedUser.name
-      next()
+      return next()
     } catch (error) {
       console.log(error)
     }
-  } else {
-    console.log('Access denied. Token invalid or missing.')
-    socket.emit('authError', 'Access denied. Token invalid or missing.')
-    socket.disconnect()
-    next(new Error('Authentication error'))
   }
+  console.log('Access denied. Token invalid or missing.')
+  socket.emit('authError', 'Access denied. Token invalid or missing.')
+  socket.disconnect()
+  return next(new Error('Authentication error'))
 }).on('connection', socket => {
   socketConfig(io, socket)
   server.on('close', () => {

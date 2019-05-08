@@ -71,20 +71,24 @@ channelController.joinOrCreate = async (name, author) => {
 }
 
 channelController.leaveOrDestroy = async (name, author) => {
-  const channelExist = await Channel.findOne({ name })
-  if (channelExist && channelExists.name === name) {
-    if (channelExists.members.length > 1) {
-      const filteredChannel = channelExists.members.filter(member => {
-        return member.id !== author
-      })
-      filteredChannel.save()
-      return { name, success: `${author} removed from channel ${name}` }
-    } else {
-      await Channel.findOneAndDelete({ name })
-      return { name, success: `channel ${name} deleted` }
+  try {
+    const channelExist = await Channel.findOne({ name })
+    if (channelExist && channelExists.name === name) {
+      if (channelExists.members.length > 1) {
+        const filteredMembers = channelExists.members.filter(member => {
+          return member.id !== author
+        })
+        channelExists.members = filteredMembers
+        channelExists.save()
+        return { name, success: `${author} removed from channel ${name}` }
+      } else {
+        await Channel.findOneAndDelete({ name })
+        return { name, success: `channel ${name} deleted` }
+      }
     }
+  } catch (error) {
+    return { notice: `no channel with name ${name} found` }
   }
-  return { notice: `no channel with name ${name} found` }
 }
 
 module.exports = channelController

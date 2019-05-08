@@ -31,6 +31,9 @@ authRouter.post('/login', async (req, res) => {
 
 authRouter.post('/verifyAuthCookie', async (req, res) => {
   try {
+    if (!req.cookies || !req.cookies.token || !req.user) {
+      return res.json({ error: 'no valid authentication cookie found!' })
+    }
     const user = await User.findById(req.user.id)
     const userForToken = {
       id: user.id,
@@ -41,7 +44,7 @@ authRouter.post('/verifyAuthCookie', async (req, res) => {
     res.json({ username: user.username, name: user.name, id: user.id })
   } catch (error) {
     console.log(error)
-    res.json({ message: 'no valid authentication cookie found' })
+    res.json({ error: 'no valid authentication cookie found!' })
   }
 })
 
@@ -51,7 +54,7 @@ authRouter.post('/logout', async (req, res) => {
     res.end()
   } catch (error) {
     console.log(error)
-    res.status(401).json({ error: 'logout error' })
+    res.status(401).json({ error: 'logout failed' })
   }
 })
 
