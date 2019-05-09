@@ -90,9 +90,9 @@ channelController.leaveOrDestroy = async (id, author) => {
       })
       return { id, success: `${author} removed from channel ${id}` }
     } else {
-      await channelExists.messages.forEach(async messageId => {
+      for (const messageId of channelExists.messages) {
         await Message.findOneAndRemove({ _id: messageId })
-      })
+      }
       await Channel.findOneAndRemove({ _id: id })
       return { id, success: `channel ${id} deleted` }
     }
