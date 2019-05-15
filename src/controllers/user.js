@@ -111,7 +111,7 @@ userRouter.put('/edit', validationsForEdit, async (req, res) => {
     }
     const { username, name, password, id } = req.body
     if (req.user.id !== id) {
-      return res.status(400).json({ error: 'error when editing user' })
+      return res.status(400).json({ error: 'editing user failed' })
     }
     let user = {}
     if (username) user.username = username
