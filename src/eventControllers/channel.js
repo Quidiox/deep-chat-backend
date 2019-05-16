@@ -1,10 +1,10 @@
 const Channel = require('../models/Channel')
 const Message = require('../models/Message')
 
-const channelController = {}
+const channelEvents = {}
 
 //get all channels you have joined
-channelController.getByUser = async userId => {
+channelEvents.getByUser = async userId => {
   try {
     const channels = await Channel.find({ members: userId }).select(
       'id name members author'
@@ -16,11 +16,11 @@ channelController.getByUser = async userId => {
   }
 }
 
-channelController.getChannelMessages = async channelId => {
+channelEvents.getChannelMessages = async channelId => {
   try {
     const channelMessages = await Channel.findById(channelId).populate({
       path: 'messages',
-      populate: { path: 'author', select: 'name' }
+      populate: { path: 'author', select: 'nickname' }
     })
     return channelMessages
   } catch (error) {
@@ -29,9 +29,12 @@ channelController.getChannelMessages = async channelId => {
   }
 }
 
-channelController.getChannelMembers = async channelId => {
+channelEvents.getChannelMembers = async channelId => {
   try {
-    const channelUsers = await Channel.findById(channelId).populate('members')
+    const channelUsers = await Channel.findById(channelId).populate({
+      path: 'members',
+      select: 'id username nickname'
+    })
     return channelUsers
   } catch (error) {
     console.log(error)
@@ -39,7 +42,7 @@ channelController.getChannelMembers = async channelId => {
   }
 }
 
-channelController.getMessagesRange = async (channelId, from, to) => {
+channelEvents.getMessagesRange = async (channelId, from, to) => {
   try {
     const channel = await Channel.findById(channelId)
     return channel
@@ -51,7 +54,7 @@ channelController.getMessagesRange = async (channelId, from, to) => {
   }
 }
 
-channelController.joinOrCreate = async (name, author) => {
+channelEvents.joinOrCreate = async (name, author) => {
   try {
     const channelExists = await Channel.findOne({ name })
     if (channelExists && channelExists.name === name) {
@@ -71,7 +74,7 @@ channelController.joinOrCreate = async (name, author) => {
   }
 }
 
-channelController.leaveOrDestroy = async (id, author) => {
+channelEvents.leaveOrDestroy = async (id, author) => {
   try {
     const channelExists = await Channel.findById(id)
     if (
@@ -101,4 +104,4 @@ channelController.leaveOrDestroy = async (id, author) => {
   }
 }
 
-module.exports = channelController
+module.exports = channelEvents

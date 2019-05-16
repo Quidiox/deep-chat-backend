@@ -1,5 +1,7 @@
-const channelController = require('../../src/controllers/channel')
-const messageController = require('../../src/controllers/message')
+const channelEvents = require('../eventControllers/channel')
+const messageEvents = require('../eventControllers/message')
+const userEvents = require('../eventControllers/user')
+
 const socketConfig = (io, socket) => {
   socket.on('clientConnected', message => {
     console.log(message)
@@ -7,7 +9,7 @@ const socketConfig = (io, socket) => {
   })
 
   socket.on('LOAD_ALL_CHANNELS_REQUEST', async () => {
-    const channels = await channelController.getByUser(socket.userId)
+    const channels = await channelEvents.getByUser(socket.userId)
     channels.map(channel => {
       socket.join(channel.id)
     })
@@ -18,7 +20,7 @@ const socketConfig = (io, socket) => {
   })
 
   socket.on('USER_JOIN_CHANNEL_REQUEST', async name => {
-    const channel = await channelController.joinOrCreate(name, socket.userId)
+    const channel = await channelEvents.joinOrCreate(name, socket.userId)
     socket.join(channel.id).emit('USER_JOIN_CHANNEL_RESPONSE', {
       type: 'USER_JOIN_CHANNEL_RESPONSE',
       payload: channel
@@ -26,7 +28,7 @@ const socketConfig = (io, socket) => {
   })
 
   socket.on('USER_LEAVE_CHANNEL_REQUEST', async id => {
-    const result = await channelController.leaveOrDestroy(id, socket.userId)
+    const result = await channelEvents.leaveOrDestroy(id, socket.userId)
     if (result.notice) {
       socket.emit('USER_LEAVE_CHANNEL_RESPONSE', {
         type: 'USER_LEAVE_CHANNEL_RESPONSE',
@@ -42,11 +44,11 @@ const socketConfig = (io, socket) => {
   })
 
   socket.on('NEW_MESSAGE_REQUEST', async ({ channelId, text }) => {
-    const message = await messageController.newMessage(
+    const message = await messageEvents.newMessage(
       channelId,
       text,
       socket.userId,
-      socket.userName
+      socket.nickname
     )
     io.in(channelId).emit('NEW_MESSAGE_RESPONSE', {
       type: 'NEW_MESSAGE_RESPONSE',
@@ -57,7 +59,7 @@ const socketConfig = (io, socket) => {
     })
   })
   socket.on('LOAD_CHANNEL_MESSAGES_REQUEST', async ({ channelId }) => {
-    const messages = await channelController.getChannelMessages(channelId)
+    const messages = await channelEvents.getChannelMessages(channelId)
     socket.emit('LOAD_CHANNEL_MESSAGES_RESPONSE', {
       type: 'LOAD_CHANNEL_MESSAGES_RESPONSE',
       payload: {
@@ -68,10 +70,11 @@ const socketConfig = (io, socket) => {
   })
   socket.on('LOAD_CHANNEL_MEMBERS_REQUEST', async ({ channelId }) => {
     const clientsConnected = io.sockets.adapter.rooms[channelId].sockets
+    console.log(clientsConnected)
     const activeMembers = Object.keys(clientsConnected).map(
-      client => io.sockets.connected[client].userName
+      client => io.sockets.connected[client].nickname
     )
-    const members = await channelController.getChannelMembers(channelId)
+    const members = await channelEvents.getChannelMembers(channelId)
     const membersToReturn = Object.assign({}, members.toJSON(), {
       activeMembers
     })

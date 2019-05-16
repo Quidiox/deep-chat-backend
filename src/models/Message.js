@@ -4,8 +4,6 @@ const messageSchema = new mongoose.Schema(
   {
     text: { type: String, required: true, index: true },
     author: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-    created: { type: Date, default: Date.now },
-    edited: { type: Date, default: Date.now },
     hidden: { type: Boolean, default: false }
   },
   {
@@ -15,9 +13,9 @@ const messageSchema = new mongoose.Schema(
           id: ret._id,
           text: ret.text,
           author: ret.author,
-          created: ret.created,
-          edited: ret.edited,
-          hidden: ret.hidden
+          hidden: ret.hidden,
+          createdAt: ret.createdAt,
+          updatedAt: ret.updatedAt
         }
       }
     },
@@ -27,12 +25,13 @@ const messageSchema = new mongoose.Schema(
           id: ret._id,
           text: ret.text,
           author: ret.author,
-          created: ret.created,
-          edited: ret.edited,
-          hidden: ret.hidden
+          hidden: ret.hidden,
+          createdAt: ret.createdAt,
+          updatedAt: ret.updatedAt
         }
       }
-    }
+    },
+    timestamps: true
   }
 )
 

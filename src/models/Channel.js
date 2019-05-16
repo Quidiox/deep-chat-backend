@@ -12,8 +12,6 @@ const channelSchema = new mongoose.Schema(
     author: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     messages: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Message' }],
     members: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-    created: { type: Date, default: Date.now },
-    edited: { type: Date, default: Date.now },
     hidden: { type: Boolean, default: false }
   },
   {
@@ -25,9 +23,9 @@ const channelSchema = new mongoose.Schema(
           author: ret.author,
           messages: ret.messages,
           members: ret.members,
-          created: ret.created,
-          edited: ret.edited,
-          hidden: ret.hiddenh
+          createdAt: ret.createdAt,
+          updatedAt: ret.updatedAt,
+          hidden: ret.hidden
         }
       }
     },
@@ -39,12 +37,13 @@ const channelSchema = new mongoose.Schema(
           author: ret.author,
           messages: ret.messages,
           members: ret.members,
-          created: ret.created,
-          edited: ret.edited,
+          createdAt: ret.createdAt,
+          updatedAt: ret.updatedAt,
           hidden: ret.hidden
         }
       }
-    }
+    },
+    timestamps: true
   }
 )
 

@@ -18,11 +18,11 @@ authRouter.post('/login', async (req, res) => {
     }
     const userForToken = {
       id: user.id,
-      name: user.name
+      nickname: user.nickname
     }
     const token = jwt.sign(userForToken, config.secret)
     res.cookie('token', token, cookieSettings)
-    res.json({ username: user.username, name: user.name, id: user.id })
+    res.json({ username: user.username, nickname: user.nickname, id: user.id })
   } catch (error) {
     console.log(error)
     res.status(400).json({ error: 'login failed' })
@@ -37,11 +37,11 @@ authRouter.post('/verifyAuthCookie', async (req, res) => {
     const user = await User.findById(req.user.id)
     const userForToken = {
       id: user.id,
-      name: user.name
+      nickname: user.nickname
     }
     const token = jwt.sign(userForToken, config.secret)
     res.cookie('token', token, cookieSettings)
-    res.json({ username: user.username, name: user.name, id: user.id })
+    res.json({ username: user.username, nickname: user.nickname, id: user.id })
   } catch (error) {
     console.log(error)
     res.json({ error: 'no valid authentication cookie found!' })

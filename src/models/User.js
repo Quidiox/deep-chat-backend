@@ -9,8 +9,13 @@ const userSchema = new mongoose.Schema(
       required: true,
       dropDups: true
     },
-    name: { type: String, required: true },
-    passwordHash: { type: String, required: true }
+    nickname: { type: String, required: true, unique: true, dropDups: true },
+    passwordHash: { type: String, required: true },
+    lastActiveChannel: { type: mongoose.Schema.Types.ObjectId, ref: 'Channel' },
+    lastVisitOnChannel: {
+      type: Map,
+      of: Date
+    }
   },
   {
     toObject: {
@@ -18,8 +23,10 @@ const userSchema = new mongoose.Schema(
         return {
           id: ret._id,
           username: ret.username,
-          name: ret.name,
-          passwordHash: ret.passwordHash
+          nickname: ret.nickname,
+          passwordHash: ret.passwordHash,
+          lastActiveChannel: ret.lastActiveChannel,
+          lastVisitOnChannel: ret.lastVisitOnChannel
         }
       }
     },
@@ -28,8 +35,10 @@ const userSchema = new mongoose.Schema(
         return {
           id: ret._id,
           username: ret.username,
-          name: ret.name,
-          passwordHash: ret.passwordHash
+          nickname: ret.nickname,
+          passwordHash: ret.passwordHash,
+          lastActiveChannel: ret.lastActiveChannel,
+          lastVisitOnChannel: ret.lastVisitOnChannel
         }
       }
     }
