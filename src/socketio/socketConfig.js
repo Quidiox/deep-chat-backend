@@ -27,8 +27,8 @@ const socketConfig = (io, socket) => {
     })
   })
 
-  socket.on('USER_LEAVE_CHANNEL_REQUEST', async id => {
-    const result = await channelEvents.leaveOrDestroy(id, socket.userId)
+  socket.on('USER_LEAVE_CHANNEL_REQUEST', async channelId => {
+    const result = await channelEvents.leaveOrDestroy(channelId, socket.userId)
     if (result.notice) {
       socket.emit('USER_LEAVE_CHANNEL_RESPONSE', {
         type: 'USER_LEAVE_CHANNEL_RESPONSE',
@@ -39,7 +39,7 @@ const socketConfig = (io, socket) => {
         type: 'USER_LEAVE_CHANNEL_RESPONSE',
         payload: result
       })
-      socket.leave(id)
+      socket.leave(channelId)
     }
   })
 
@@ -83,6 +83,17 @@ const socketConfig = (io, socket) => {
         channelId,
         members: membersToReturn
       }
+    })
+  })
+  socket.on('USER_SET_ACTIVE_CHANNEL_REQUEST', async channelId => {
+    const user = await userEvents.updateChannelActivity(
+      channelId,
+      socket.userId
+    )
+    console.log(user)
+    socket.emit('USER_SET_ACTIVE_CHANNEL_RESPONSE', {
+      type: 'USER_SET_ACTIVE_CHANNEL_RESPONSE',
+      payload: user
     })
   })
 }

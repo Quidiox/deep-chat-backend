@@ -11,7 +11,7 @@ const userSchema = new mongoose.Schema(
     },
     nickname: { type: String, required: true, unique: true, dropDups: true },
     passwordHash: { type: String, required: true },
-    lastActiveChannel: { type: mongoose.Schema.Types.ObjectId, ref: 'Channel' },
+    activeChannel: { type: mongoose.Schema.Types.ObjectId, ref: 'Channel' },
     lastVisitOnChannel: {
       type: Map,
       of: Date
@@ -25,7 +25,7 @@ const userSchema = new mongoose.Schema(
           username: ret.username,
           nickname: ret.nickname,
           passwordHash: ret.passwordHash,
-          lastActiveChannel: ret.lastActiveChannel,
+          activeChannel: ret.activeChannel,
           lastVisitOnChannel: ret.lastVisitOnChannel
         }
       }
@@ -37,7 +37,7 @@ const userSchema = new mongoose.Schema(
           username: ret.username,
           nickname: ret.nickname,
           passwordHash: ret.passwordHash,
-          lastActiveChannel: ret.lastActiveChannel,
+          activeChannel: ret.activeChannel,
           lastVisitOnChannel: ret.lastVisitOnChannel
         }
       }
