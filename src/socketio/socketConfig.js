@@ -70,7 +70,6 @@ const socketConfig = (io, socket) => {
   })
   socket.on('LOAD_CHANNEL_MEMBERS_REQUEST', async ({ channelId }) => {
     const clientsConnected = io.sockets.adapter.rooms[channelId].sockets
-    console.log(clientsConnected)
     const activeMembers = Object.keys(clientsConnected).map(
       client => io.sockets.connected[client].nickname
     )
