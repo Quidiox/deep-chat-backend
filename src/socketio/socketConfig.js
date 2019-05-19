@@ -3,15 +3,18 @@ const messageEvents = require('../eventControllers/message')
 const userEvents = require('../eventControllers/user')
 
 const socketConfig = (io, socket) => {
-  socket.on('clientConnected', message => {
+  socket.on('CLIENT_CONNECT_REQUEST', message => {
     console.log(message)
-    socket.emit('serverConnected', `Connection to server successful.`)
+    socket.emit('SERVER_CONNECT_RESPONSE', {
+      type: 'SERVER_CONNECT_RESPONSE',
+      payload: 'Connection to server successful.'
+    })
   })
 
   socket.on('LOAD_ALL_CHANNELS_REQUEST', async () => {
     const channels = await channelEvents.getByUser(socket.userId)
-    channels.map(channel => {
-      socket.join(channel.id)
+    channels.map(async channel => {
+      await socket.join(channel.id)
     })
     socket.emit('LOAD_ALL_CHANNELS_RESPONSE', {
       type: 'LOAD_ALL_CHANNELS_RESPONSE',
@@ -90,7 +93,6 @@ const socketConfig = (io, socket) => {
       channelId,
       socket.userId
     )
-    console.log(user)
     socket.emit('USER_SET_ACTIVE_CHANNEL_RESPONSE', {
       type: 'USER_SET_ACTIVE_CHANNEL_RESPONSE',
       payload: user

@@ -41,28 +41,6 @@ const validationsForEdit = [
     .withMessage('Password must be between 3-30 characters long.')
 ]
 
-userRouter.get('/:userId', async (req, res) => {
-  try {
-    const user = await User.findById(req.params.userId).select(
-      'id username nickname'
-    )
-    res.json(user)
-  } catch (error) {
-    console.log(error)
-    res.status(400).json('failed to get user')
-  }
-})
-
-userRouter.get('/', async (req, res) => {
-  try {
-    const users = await User.find().select('id username nickname')
-    res.json(users)
-  } catch (error) {
-    console.log(error)
-    res.status(400).json({ error: 'failed to get all users' })
-  }
-})
-
 userRouter.post('/create', validationsForCreate, async (req, res) => {
   try {
     const errors = validationResult(req)
